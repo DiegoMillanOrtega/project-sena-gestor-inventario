@@ -1,0 +1,40 @@
+<div class="container">
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+     
+      <div class="d-flex" role="search">
+      </div>
+    </div>    
+
+    </div>
+  </nav>
+</div>
+
+<div style="max-height: 410px; overflow-y: auto;">
+  <table class="table table-striped" style="text-align: center;">
+    <thead>
+      <tr class="table-info">
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Apellido</th>
+        <th scope="col">Sexo</th>
+        <th scope="col">Dirección</th>
+        <th scope="col">Email</th>
+        <th scope="col">Telefono</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (client of clientsList; track $index) {
+      <tr>
+        <th scope="row">{{ client.id }}</th>
+        <td>{{ client.name }}</td>
+        <td>{{ client.lastName }}</td>
+        <td>{{ client.gender }}</td>
+        <td>{{ client.address }}</td>
+        <td>{{ client.email }}</td>
+        <td>{{ client.phoneNumber }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
