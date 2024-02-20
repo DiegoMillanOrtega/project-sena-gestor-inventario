@@ -17,8 +17,9 @@ import { AddCategoryComponent } from './dashboard/pages/inventory/category/add-c
 import { IconsSvgComponent } from './icons-svg/icons-svg.component';
 import { PedidosComponent } from './dashboard/pages/inventory/pedidos/pedidos.component';
 import { ListPedidosComponent } from './dashboard/pages/inventory/pedidos/list-pedidos/list-pedidos.component';
-import rxjs from 'rxjs';
 import { ClientComponent } from './dashboard/pages/client/client.component';
+import { AddClientComponent } from './dashboard/pages/client/add-client/add-client.component';
+import { DetailsClientComponent } from './dashboard/pages/client/details-client/details-client.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,8 @@ import { ClientComponent } from './dashboard/pages/client/client.component';
     PedidosComponent,
     ListPedidosComponent,
     ClientComponent,
+    AddClientComponent,
+    DetailsClientComponent,
   ],
   imports: [
     BrowserModule,

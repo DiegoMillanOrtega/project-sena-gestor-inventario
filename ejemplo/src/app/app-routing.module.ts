@@ -10,6 +10,8 @@ import { AddCategoryComponent } from './dashboard/pages/inventory/category/add-c
 import { PedidosComponent } from './dashboard/pages/inventory/pedidos/pedidos.component';
 import { ListPedidosComponent } from './dashboard/pages/inventory/pedidos/list-pedidos/list-pedidos.component';
 import { ClientComponent } from './dashboard/pages/client/client.component';
+import { AddClientComponent } from './dashboard/pages/client/add-client/add-client.component';
+import { DetailsClientComponent } from './dashboard/pages/client/details-client/details-client.component';
 
 const routes: Routes = [
   { path: '', component: ContainerItemsComponent},
@@ -21,7 +23,9 @@ const routes: Routes = [
   { path: 'category', component: CategoryComponent},
   { path: 'category/newCategory', component: AddCategoryComponent},
   { path: 'listPedidos', component: ListPedidosComponent},
-  { path: 'client', component: ClientComponent}
+  { path: 'client', component: ClientComponent},
+  { path: 'client/addClient', component: AddClientComponent},
+  { path: 'client/details/:id/:client', component: DetailsClientComponent},
 ];
 
 @NgModule({

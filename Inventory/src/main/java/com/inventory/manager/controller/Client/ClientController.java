@@ -27,6 +27,11 @@ public class ClientController {
         return this.clienteService.findAllClient();
     }
 
+    @GetMapping("/getClientById/{id}")
+    public Client findClientById(@PathVariable Long id) {
+        return this.clienteService.findClientById(id);
+    }
+
     @PostMapping("/saveClient")
     public ResponseEntity<String> saveClient(@RequestBody Client client) {
         try {
@@ -37,4 +42,11 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving client");
         }
     }
+
+    @DeleteMapping("/deleteClient/{id}")
+    public void deleteClientById(@PathVariable Long id) {
+        logger.info("Client deleted");
+        this.clienteService.deleteClientById(id);
+    }
+
 }

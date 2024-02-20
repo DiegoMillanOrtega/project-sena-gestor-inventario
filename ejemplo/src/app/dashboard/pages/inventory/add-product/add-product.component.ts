@@ -4,6 +4,7 @@ import { InventoryService } from '../../../../service/inventory.service';
 import Swal from 'sweetalert2';
 import { CategoryService } from '../../../../service/category.service';
 import { Category } from '../../../../model/category.model';
+import { AlertsService } from '../../../../alerts/alerts.service';
 
 @Component({
   selector: 'app-add-product',
@@ -14,7 +15,8 @@ export class AddProductComponent implements OnInit{
 
   private _inventoryService = inject(InventoryService);
   private categoryService = inject(CategoryService);
-
+  private alerts = inject(AlertsService);
+  
   newProduct: FormGroup;
   categoryList: Category[] = [];
 
@@ -30,7 +32,6 @@ export class AddProductComponent implements OnInit{
   ngOnInit(): void {
     this.categoryService.getCategoryList().subscribe(
       response => {
-        console.log(response);
         this.categoryList = response;
       },
       error => console.error(error)
@@ -41,18 +42,14 @@ export class AddProductComponent implements OnInit{
     console.log(this.newProduct.value);
     this._inventoryService.saveProduct(this.newProduct.value).subscribe(
       response => {
-        console.log(response);
-        Swal.fire({
-          position: 'top-right',
-          icon: 'success',
-          title: 'Producto guardado con éxito.',
-          showConfirmButton: false,
-          timer: 1500
-        });
+        this.alerts.mostrarMensajeExito(
+          '¡Guardado!',
+          'El producto se guardó correctamente'
+        )
+        this.newProduct.reset();
       },
-      error => console.error(error)
+      error => this.alerts.mostrarMensajeError('Error al guardar el producto')
     )
-    this.newProduct.reset();
   }
 
   categoriaSeleccionada(category: string) {

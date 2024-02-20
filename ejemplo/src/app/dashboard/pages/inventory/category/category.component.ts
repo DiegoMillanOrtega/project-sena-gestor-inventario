@@ -3,6 +3,7 @@ import { CategoryService } from '../../../../service/category.service';
 import { Category } from '../../../../model/category.model';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { AlertsService } from '../../../../alerts/alerts.service';
 
 @Component({
   selector: 'app-category',
@@ -12,6 +13,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class CategoryComponent implements OnInit{
 
   private categoryService = inject(CategoryService);
+  private alerts = inject(AlertsService);
 
   categoryForm: FormGroup;
   CategoryList: Category[] = [];
@@ -32,7 +34,6 @@ export class CategoryComponent implements OnInit{
   loadCategory() {
     this.categoryService.getCategoryList().subscribe(
       params => {
-        console.log('Se recibio la lista!!', params);
         this.CategoryList = params;
       },
       error => console.error('error al obtener la lista :(', error)
@@ -43,7 +44,6 @@ export class CategoryComponent implements OnInit{
   buscarCategoria() {
     this.categoryService.searchCategoryByName(this.category).subscribe(
       response => {
-        console.log('Se pudo encontrar la categoria!!');
         this.CategoryList = response;
       },
       error => console.error('error al encontrar la categoria', error)
@@ -53,7 +53,6 @@ export class CategoryComponent implements OnInit{
   editarCategoria(id: number | string) {
     this.categoryService.searchCategoryById(id).subscribe(
       response => {
-        console.log('Categoria: ',response);
         this.categoryForm.patchValue(response);
       },
       error => console.error('error al cargar la categoria ', error)
@@ -87,21 +86,15 @@ export class CategoryComponent implements OnInit{
       if (result.isConfirmed) {
         this.categoryService.saveCategory(this.categoryForm.value).subscribe(
           response => {
-            console.log('categoria actualizada', response);
+            this.alerts.mostrarMensajeExito(
+              '¡Actualizado!',
+              'La categoría se actualizó con éxito.'
+            )
             this.loadCategory();
-            Swal.fire({
-              title: "Actualizado!",
-              text: "El producto ha sido actualizado",
-              icon: "success"
-            });
         },
           error => {
-            console.error('error al actualizar categoria', error);
-            Swal.fire({
-              title: "Error al actualizar!",
-              text: "El producto no ha sido actualizado",
-              icon: "error"
-            });
+            console.error(error)
+            this.alerts.mostrarMensajeError('Error al actualizar la categoría.')
           }
         );
         
@@ -124,24 +117,17 @@ export class CategoryComponent implements OnInit{
       if (result.isConfirmed) {
         this.categoryService.deleteCategory(id).subscribe(
           response => {
-            console.log(response);
-            Swal.fire({
-              title: "Eliminado!",
-              text: "El producto ha sido eliminado",
-              icon: "success"
-            });
+            this.alerts.mostrarMensajeExito(
+              '¡Eliminado!',
+              'La categoría se eliminó con éxito.'
+            )
             this.loadCategory();
           },
           error => {
             console.error(error);
-            Swal.fire({
-              title: "¡Error!",
-              text: "El producto no se pudo eliminar",
-              icon: "error"
-            });
+            this.alerts.mostrarMensajeError('Error al eliminar la categoría.')
           }
         );
-        
       }
     });
   }

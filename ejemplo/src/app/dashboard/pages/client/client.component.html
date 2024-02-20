@@ -1,19 +1,31 @@
-<div class="container">
+<header>Lista de clientes</header>
+<div class="container mb-4 mt-3">
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-     
       <div class="d-flex" role="search">
-      </div>
-    </div>    
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Buscar por nombre"
+          aria-label="Search"
+        />
 
+        <button class="btn btn-outline-success w-50" type="submit">
+          <app-icons-svg [nombreIcono]="'search'" /> Search
+        </button>
+
+        <button type="button" class="btn btn-primary" routerLink="addClient">
+          <app-icons-svg [nombreIcono]="'add'" />
+        </button>
+      </div>
     </div>
   </nav>
 </div>
 
-<div style="max-height: 410px; overflow-y: auto;">
-  <table class="table table-striped" style="text-align: center;">
+<div style="max-height: 400px; overflow-y: auto">
+  <table class="table table-striped" style="text-align: center">
     <thead>
-      <tr class="table-info">
+      <tr class="table-warning">
         <th scope="col">#</th>
         <th scope="col">Nombre</th>
         <th scope="col">Apellido</th>
@@ -21,6 +33,7 @@
         <th scope="col">Dirección</th>
         <th scope="col">Email</th>
         <th scope="col">Telefono</th>
+        <th scope="col">Seleccionar</th>
       </tr>
     </thead>
     <tbody>
@@ -33,8 +46,20 @@
         <td>{{ client.address }}</td>
         <td>{{ client.email }}</td>
         <td>{{ client.phoneNumber }}</td>
+        <td>
+          <div class="d-flex">
+            <button class="btn btn-primary" [routerLink]="['/client','details', client.id, client.name]">
+              <app-icons-svg [nombreIcono]="'edit'"/>
+            </button>
+            <button class="btn btn-danger" (click)="eliminarClient(client.id)">
+              <app-icons-svg [nombreIcono]="'delete'"/>
+            </button>
+          </div>
+        
+        </td>
       </tr>
       }
     </tbody>
   </table>
 </div>
+

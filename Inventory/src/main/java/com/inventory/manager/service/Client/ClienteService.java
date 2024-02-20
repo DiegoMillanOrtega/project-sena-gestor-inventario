@@ -22,4 +22,14 @@ public class ClienteService implements IClienteService{
     public void saveClient(Client client) {
         this.clienteRepository.save(client);
     }
+
+    @Override
+    public Client findClientById(Long id) {
+        return this.clienteRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteClientById(Long id) {
+        this.clienteRepository.deleteById(id);
+    }
 }
