@@ -26,6 +26,7 @@ export class PedidosComponent {
   productName: string = '';
   clientSelected: string = '';
   stock: number = 0;
+  loading: boolean = true;
 
   nameClients: string[] = [];
   
@@ -61,6 +62,9 @@ export class PedidosComponent {
     );
 
     this.loadClients();
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000)
   }
   
   loadClients() {

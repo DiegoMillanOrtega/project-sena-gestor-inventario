@@ -27,7 +27,13 @@ export class AddClientComponent {
     });
   }
   addCliente() {
-    this.serviceCliente.addClient(this.newClient.value).subscribe(
+    const capitalizedValues = {
+      ...this.newClient.value,
+      lastName: this.capitalize(this.newClient.value.lastName),
+      name: this.capitalize(this.newClient.value.name),
+    };
+    
+    this.serviceCliente.addClient(capitalizedValues).subscribe(
       (response) => {
         this.alerts.mostrarMensajeExito(
           '¡Guardado!',
@@ -37,5 +43,9 @@ export class AddClientComponent {
       },
       (error) => this.alerts.mostrarMensajeError('Error al guardar el cliente')
     );
+  }
+
+  capitalize(value: string): string {
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
 }

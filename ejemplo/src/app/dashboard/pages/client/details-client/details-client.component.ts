@@ -19,6 +19,7 @@ export class DetailsClientComponent implements OnInit {
   nameClient: string = '';
   idClient: number = 0;
   detailsClient: FormGroup;
+  loading: boolean = true;
 
   constructor(private form: FormBuilder) {
     this.detailsClient = this.form.group({
@@ -33,6 +34,10 @@ export class DetailsClientComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000)
+
     this._routed.params.subscribe((params) => {
       this.idClient = params['id'];
     });

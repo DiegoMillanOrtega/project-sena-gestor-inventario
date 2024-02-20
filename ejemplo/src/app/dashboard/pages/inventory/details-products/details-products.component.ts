@@ -25,6 +25,7 @@ export class DetailsProductsComponent implements OnInit{
   product?: string;
   detailsProduct: FormGroup;
   categoryList: Category[] = [];
+  loading: boolean = true;
 
   constructor(private form: FormBuilder) {
     this.detailsProduct = this.form.group({
@@ -50,13 +51,16 @@ export class DetailsProductsComponent implements OnInit{
       )
     }
     );
-
     this.categoryService.getCategoryList().subscribe(
       response => {
         this.categoryList = response;
       },
       error => console.error('error al obtener lista de categoria', error)
-    )
+    );
+    
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000)
   }
   
   categoriaSeleccionada(category: string) {
