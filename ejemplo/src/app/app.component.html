@@ -1,17 +1,17 @@
 <div class="contenedor">
   <header>
-    @if (_settingService.obtainedUserSetting()?.nameSystem != null) {
-    <p> {{ _settingService.obtainedUserSetting()?.nameSystem }} </p>
-    <img [src]="_settingService.getLogoSrc()" alt="">
+    @if (_loginService.isAuthenticated()) {
+    <p>{{ _settingService.obtainedUserSetting()?.nameSystem }}</p>
+    <img [src]="_settingService.getLogoSrc()" alt="" />
     } @else {
-      <p> Gestión y Control </p>
+    <p>Gestión y Control</p>
     }
   </header>
 
   @if (_loginService.isAuthenticated()) {
-    <app-login/>
+    <app-dashboard />
   } @else {
-    <app-dashboard/>
+    <app-login />
   }
   <footer></footer>
 </div>

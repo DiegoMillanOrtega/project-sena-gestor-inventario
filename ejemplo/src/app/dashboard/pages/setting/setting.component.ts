@@ -3,6 +3,7 @@ import { SettingService } from '../../../service/setting.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { LoginService } from '../../../service/login.service';
 import Swal from 'sweetalert2';
+import { AlertsService } from '../../../alerts/alerts.service';
 
 @Component({
   selector: 'app-setting',
@@ -14,6 +15,8 @@ export class SettingComponent implements OnInit{
   
   public _settingService = inject(SettingService);
   private _loginService = inject(LoginService);
+  private alert = inject(AlertsService);
+
   selectedLogo?: FormControl;
   
   newUserSetting: FormGroup;
@@ -22,7 +25,7 @@ export class SettingComponent implements OnInit{
     this.selectedLogo = new FormControl(null);
     this.newUserSetting = this.form.group({
       nameSystem: [''],
-      username: [this._settingService.getSharedUsername()],
+      username: [''],
       logo: this.selectedLogo
     })
 
@@ -30,7 +33,8 @@ export class SettingComponent implements OnInit{
 
   ngOnInit(): void {
     this._settingService.getUserSetting(this._settingService.getSharedUsername()).subscribe(
-      params => this.newUserSetting.get('nameSystem')?.setValue(params.nameSystem),
+      params => {this.newUserSetting.patchValue(params)
+      console.log(params)},
       error => console.error('error al setValue al formulario', error)  
       
     )
@@ -44,26 +48,28 @@ export class SettingComponent implements OnInit{
   }
 
   updateUserSetting() {
+
     const formData = new FormData();
     formData.append('nameSystem' , this.newUserSetting.get('nameSystem')?.value)
     formData.append('username' , this.newUserSetting.get('username')?.value)
     formData.append('logo', this.newUserSetting.get('logo')?.value)
-    
+
     this._settingService.postUserSetting(formData).subscribe(
       response => {
         console.log('Post con éxito', response);
-        Swal.fire({
-          title: 'Configuración actualizada con éxito.',
-          position: 'center',
-          timer: 1500,
-          icon: 'success'
-        })
+        this.alert.mostrarMensajeExito(
+          '¡Actualizado!',
+          'Configuración actualizada con éxito.'
+        );
+        this.newUserSetting.reset();
       },
       error => {
         console.error('Error al hacer el post', error);
+        this.alert.mostrarMensajeError(
+          'Error al actualizar la configuración.'
+          );
       }
     );
-    this.newUserSetting.reset();
   }
 
 }

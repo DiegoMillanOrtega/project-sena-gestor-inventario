@@ -1,29 +1,47 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, } from 'rxjs';
-import { UsersSettings } from '../model/userSetting.model';
+import { Observable, catchError, map, throwError } from 'rxjs';
+import { UserSetting } from '../model/userSetting.model';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SettingService {
-  
-  private apiUrl: string = "http://localhost:8080/users";
+  private apiUrl: string = 'http://localhost:8080/users';
   private _http = inject(HttpClient);
-  
+
   private username: string = '';
-  private userSetting?: UsersSettings;
-  
-  
-  getUserSetting(username: string): Observable<UsersSettings> {
-    return this._http.get<UsersSettings>(`${this.apiUrl}/getUserSetting/${username}`)
+  private userSetting?: UserSetting;
+
+  getUserSetting(username: string): Observable<UserSetting> {
+    return this._http.get<UserSetting>(
+      `${this.apiUrl}/getUserSetting/${username}`
+    );
   }
 
   postUserSetting(userSetting: FormData): Observable<any> {
-    console.log('lo que llega aqui al servicio: ', userSetting)
-    return this._http.post(`${this.apiUrl}/postUpdateUserSetting`, userSetting, {responseType: 'text'})
-  }
+    return this._http
+      .post(`${this.apiUrl}/postUpdateUserSetting`, userSetting, {
+        responseType: 'json'
+      })
+      .pipe(
+        map((response: any) => {
+          // Verificar si la respuesta no es nula y tiene el formato esperado
+          if (response && response.id && response.nameSystem && response.username && response.logo) {
+            this.userSetting = response as UserSetting;
+          } else {
+            // Si la respuesta no tiene el formato esperado, lanzar un error
+            throw new Error('La respuesta del servidor tiene un formato incorrecto');
+          }
+        }),
+        catchError((error) => {
+          console.error('Error en la solicitud POST:', error);
+          return throwError('Error en la solicitud POST');
+        })
+      );
+}
   
+
   setSharedUsername(username: string): void {
     this.username = username;
   }
@@ -31,14 +49,13 @@ export class SettingService {
   getSharedUsername(): string {
     return this.username;
   }
-  
 
-  setUserSetting(userSetting: UsersSettings) {
+  setUserSetting(userSetting: UserSetting): void {
     this.userSetting = userSetting;
   }
-  
+
   obtainedUserSetting() {
-    return this.userSetting
+    return this.userSetting;
   }
 
   getLogoSrc(): string {

@@ -11,5 +11,6 @@ public interface IUserSettingService {
     public UserSetting getUserSetting(String username);
     public List<UserSetting> userSettingList();
     public void saveUserSetting(UserSetting userSetting);
+    public UserSetting findByUsername(String username);
 
 }

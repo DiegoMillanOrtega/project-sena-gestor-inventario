@@ -31,21 +31,26 @@ public class UserSettingController {
     }
 
     @PostMapping("/postUpdateUserSetting")
-    public ResponseEntity<String> saveUserSetting(@RequestParam("nameSystem") String nameSystem,
-                                                  @RequestParam("username") String username,
-                                                  @RequestParam("logo")MultipartFile logo) {
+    public ResponseEntity<UserSetting> saveUserSetting(@RequestParam("nameSystem") String nameSystem,
+                                                       @RequestParam("username") String username,
+                                                       @RequestParam("logo") MultipartFile logo) {
         try {
             UserSetting userSetting = new UserSetting();
-            if (!nameSystem.isEmpty()) {userSetting.setNameSystem(nameSystem);}
+            System.out.println("nameSystem: "+ nameSystem);
+            if (!nameSystem.isEmpty()) {
+                userSetting.setNameSystem(nameSystem);
+            }
             userSetting.setUsername(username);
-            if (!logo.isEmpty()) {userSetting.setLogo(logo.getBytes());}
-
+            if (!logo.isEmpty()) {
+                userSetting.setLogo(logo.getBytes());
+            }
             this.userSettingService.saveUserSetting(userSetting);
-
-            return ResponseEntity.ok("UserSetting saved successfully");
+            UserSetting savedUserSetting = this.userSettingService.findByUsername(username);
+            return ResponseEntity.ok(savedUserSetting); // Devuelve los datos actualizados del usuario
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving UserSetting.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
 
 }

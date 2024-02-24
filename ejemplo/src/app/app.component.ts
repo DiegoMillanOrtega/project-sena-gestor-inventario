@@ -1,8 +1,6 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { LoginService } from './service/login.service';
 import { SettingService } from './service/setting.service';
-import { UsersSettings } from './model/userSetting.model';
-import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +8,29 @@ import { animate, style, transition, trigger } from '@angular/animations';
   styleUrl: './app.component.css',
   
 })
-export class AppComponent{
+export class AppComponent implements OnInit{
   
   
   public _settingService = inject(SettingService);
   public _loginService = inject(LoginService);
   
+  nameSystem: string | undefined = '';
+  logoSrc: string | null = null;
+
+  ngOnInit(): void {
+    
+    if(this._loginService.isAuthenticated()) {
+      this.getNameSystem();
+      this.getLogoSrc();
+    }
+  }
+
+  getLogoSrc() {
+    this.logoSrc = this._settingService.getLogoSrc();
+  }
+
+  getNameSystem() {
+    this.nameSystem = this._settingService.obtainedUserSetting()?.nameSystem;
+  }
 
 }

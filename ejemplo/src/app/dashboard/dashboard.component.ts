@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { SettingService } from '../service/setting.service';
-import { UsersSettings } from '../model/userSetting.model';
+import { UserSetting } from '../model/userSetting.model';
 
 
 @Component({
@@ -12,7 +12,7 @@ export class DashboardComponent implements OnInit{
   
   private _settingService = inject(SettingService);
   
-  userSetting?: UsersSettings;
+  userSetting?: UserSetting;
   menuSelect: String = ''; 
   isCollapsed: boolean = true;
 
