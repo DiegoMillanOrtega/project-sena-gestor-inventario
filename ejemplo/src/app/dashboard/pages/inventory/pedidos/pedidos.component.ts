@@ -49,6 +49,7 @@ export class PedidosComponent {
 
       this._inventoryService.getProductId(this.productId).subscribe(
         response => {
+          console.log(response)
           this.pedidoForm?.patchValue(response);
           this.stock = this.pedidoForm.get('stock')?.value;
           console.log(this.stock)

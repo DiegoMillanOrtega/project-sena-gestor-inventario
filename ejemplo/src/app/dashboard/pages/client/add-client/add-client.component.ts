@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ClientService } from '../../../../service/client.service';
 import Swal from 'sweetalert2';
 import { AlertsService } from '../../../../alerts/alerts.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-client',
@@ -12,6 +13,7 @@ import { AlertsService } from '../../../../alerts/alerts.service';
 export class AddClientComponent {
   private serviceCliente = inject(ClientService);
   private alerts = inject(AlertsService);
+  private route = inject(Router)
 
   newClient: FormGroup;
 
@@ -40,6 +42,7 @@ export class AddClientComponent {
           'El cliente guardado correctamente.'
         );
         this.newClient.reset();
+        this.route.navigate(['/client'])
       },
       (error) => this.alerts.mostrarMensajeError('Error al guardar el cliente')
     );

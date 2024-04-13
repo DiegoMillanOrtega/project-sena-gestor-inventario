@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ClientService } from '../../../service/client.service';
 import { Client } from '../../../model/client.model';
 import Swal from 'sweetalert2';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertsService } from '../../../alerts/alerts.service';
 
 @Component({
@@ -12,9 +11,12 @@ import { AlertsService } from '../../../alerts/alerts.service';
 })
 export class ClientComponent implements OnInit {
   private serviceClient = inject(ClientService);
+  private _clientService = inject(ClientService);
   private alerts = inject(AlertsService);
 
   clientsList: Client[] = [];
+  findClient: string = ''
+  loading: boolean = true;
 
   ngOnInit(): void {
     this.loadClients();
@@ -40,5 +42,18 @@ export class ClientComponent implements OnInit {
         (error) => console.error(error)
       );
     }
+  }
+
+  buscarProductos() {
+    this.loading = true;
+    this._clientService.findClientByName(this.findClient).subscribe({
+      next: (data) => {
+        this.clientsList = data;
+        this.findClient = '';
+      },
+      complete: () => {
+        this.loading = false;
+      },
+    });
   }
 }

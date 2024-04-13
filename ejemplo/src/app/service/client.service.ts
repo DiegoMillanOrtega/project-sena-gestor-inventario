@@ -27,4 +27,8 @@ export class ClientService {
   findClientById(id: number): Observable<Client> {
     return this.http.get<Client>(`${this.apiUrl}/getClientById/${id}`);
   }
+
+  findClientByName(name: string):Observable<Client[]> {
+    return this.http.get<Client[]>(`${this.apiUrl}/getClientByName/${name}`)
+  }
 }

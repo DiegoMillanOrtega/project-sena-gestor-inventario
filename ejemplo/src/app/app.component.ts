@@ -33,4 +33,5 @@ export class AppComponent implements OnInit{
     this.nameSystem = this._settingService.obtainedUserSetting()?.nameSystem;
   }
 
+    
 }

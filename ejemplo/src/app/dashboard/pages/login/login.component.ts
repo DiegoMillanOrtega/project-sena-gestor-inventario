@@ -15,6 +15,7 @@ export class LoginComponent{
   private _loginService = inject(LoginService);
   private _settingService = inject(SettingService)
   
+  
   user: FormGroup;
   constructor(private form: FormBuilder) {
     this.user = this.form.group({

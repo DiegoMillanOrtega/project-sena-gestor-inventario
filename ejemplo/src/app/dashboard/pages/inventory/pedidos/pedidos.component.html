@@ -81,7 +81,7 @@
           aria-expanded="false"
         >
           @if (pedidoForm.get('client')?.valid) {
-          {{ pedidoForm.get("client")?.value }}
+          {{ pedidoForm.get('client')?.value }}
           }@else { Elige al cliente }
         </button>
         <ul class="dropdown-menu" style="max-height: 110px; overflow-y: auto">
@@ -91,7 +91,7 @@
               client
             }}</a>
           </li>
-      ng    }
+          }
         </ul>
       </div>
     </div>

@@ -8,9 +8,11 @@
           type="search"
           placeholder="Buscar por nombre"
           aria-label="Search"
+          [(ngModel)]="findClient"
+          (keydown.enter)="buscarProductos()"
         />
-
-        <button class="btn btn-outline-success w-50" type="submit">
+     
+        <button class="btn btn-outline-success w-50" type="submit" (click)="buscarProductos()">
           <app-icons-svg [nombreIcono]="'search'" /> Search
         </button>
 

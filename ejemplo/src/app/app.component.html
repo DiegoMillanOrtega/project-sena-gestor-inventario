@@ -2,7 +2,9 @@
   <header>
     @if (_loginService.isAuthenticated()) {
     <p>{{ _settingService.obtainedUserSetting()?.nameSystem }}</p>
-    <img [src]="_settingService.getLogoSrc()" alt="" />
+    @if (_settingService.getLogoSrc()) {
+      <img [src]="_settingService.getLogoSrc()" alt="" />
+    }
     } @else {
     <p>Gestión y Control</p>
     }
