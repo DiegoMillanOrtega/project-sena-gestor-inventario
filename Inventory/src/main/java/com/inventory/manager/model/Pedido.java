@@ -3,24 +3,25 @@ package com.inventory.manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private String product;
-    @Column(nullable = false)
-    private String category;
-    @Column(nullable = false)
-    private Integer price;
-    @Column(nullable = false)
-    private Integer stock;
-    @Column(nullable = false)
+
+    private Double price;
     private String address;
-    @Column(nullable = false)
-    private String client;
-    @Column(nullable = false)
-    private boolean confirmedDelivery;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente")
+    private Client client;
+
+    private String paymentType;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PedidoDetalle> pedidoDetalles;
+
 }

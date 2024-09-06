@@ -1,6 +1,5 @@
 package com.inventory.manager.controller.Inventory.Category;
 
-import com.inventory.manager.controller.Inventory.InventoryController;
 import com.inventory.manager.model.Category;
 import com.inventory.manager.service.Inventory.Category.CategoryService;
 import org.slf4j.Logger;
