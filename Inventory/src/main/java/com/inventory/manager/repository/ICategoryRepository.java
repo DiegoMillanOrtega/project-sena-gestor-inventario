@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ICategoryRepository extends JpaRepository<Category, Long> {
 
-    List<Category> findByCategoryContaining(String category);
+    //List<Category> findByCategoryContaining(String category);
 }

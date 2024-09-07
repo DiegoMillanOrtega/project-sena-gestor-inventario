@@ -12,7 +12,11 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String product;
-    private String category;
+
+    @ManyToOne
+    @JoinColumn(name = "id_category", nullable = false)
+    private Category category;
+
     private Long price;
     private Integer stock;
 }

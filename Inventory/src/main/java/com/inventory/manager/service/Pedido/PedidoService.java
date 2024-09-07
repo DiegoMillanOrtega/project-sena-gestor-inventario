@@ -5,10 +5,7 @@ import com.inventory.manager.model.Client;
 import com.inventory.manager.model.Inventory;
 import com.inventory.manager.model.Pedido;
 import com.inventory.manager.model.PedidoDetalle;
-import com.inventory.manager.repository.IClienteRepository;
-import com.inventory.manager.repository.IInventoryRepository;
-import com.inventory.manager.repository.IPedidoDetalleRepository;
-import com.inventory.manager.repository.IPedidoRepository;
+import com.inventory.manager.repository.*;
 import com.inventory.manager.service.Inventory.InventoryService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -35,6 +32,9 @@ public class PedidoService implements IPedidoService{
     @Autowired
     private IClienteRepository clienteRepository;
 
+    @Autowired
+    private ICategoryRepository categoryRepository;
+
     @Override
     public List<Pedido> findAllPedido() {
         return this.pedidoRepository.findAll();
@@ -42,55 +42,35 @@ public class PedidoService implements IPedidoService{
 
     @Override
     public Pedido savePedido(Pedido pedido, List<Inventory> productos, List<Integer> cantidades) {
+        // Crear una lista para los detalles del pedido
         List<PedidoDetalle> detalles = new ArrayList<>();
-        System.out.println("En el servicio" + productos.size());
+
+        // Verificar que el tamaño de productos y cantidades coincida
+        if (productos.size() != cantidades.size()) {
+            throw new IllegalArgumentException("La cantidad de productos y cantidades no coinciden");
+        }
+
+        // Asignar los productos y cantidades al pedido
         for (int i = 0; i < productos.size(); i++) {
             Inventory producto = productos.get(i);
-            //Integer cantidad = cantidades.get(i);
-            System.out.println("En for del servicio");
-            //obtener el producto
+            Integer cantidad = cantidades.get(i);
 
-
+            // Crear un nuevo detalle de pedido
             PedidoDetalle detalle = new PedidoDetalle();
             detalle.setPedido(pedido);
             detalle.setProducto(producto);
-            //detalle.setCantidades(cantidad);
+            detalle.setCantidades(cantidad);
 
             detalles.add(detalle);
-
         }
+        // Establecer los detalles del pedido al objeto pedido
         pedido.setPedidoDetalles(detalles);
-        System.out.println("El save del servicio");
+
+        // Si el cliente no está en la base de datos, lanzamos una excepción
+        if (pedido.getClient() == null || !clienteRepository.existsById(pedido.getClient().getId())) {
+            throw new IllegalArgumentException("El cliente no existe");
+        }
+
         return pedidoRepository.save(pedido);
     }
-
-
-//    @Override
-//    public void savePedido(Pedido pedido) {
-//        List<Inventory> productByName = this.inventoryService.buscarProductosPorNombre(pedido.getProduct());
-//        if (!productByName.isEmpty()) { // Verificar si la lista no está vacía
-//            Inventory product = productByName.get(0); // Obtener el primer elemento de la lista
-//            Integer stockProduct = product.getStock();
-//            stockProduct -= pedido.getStock();
-//            product.setStock(stockProduct);
-//            this.inventoryService.saveProduct(product);
-//        } else {
-//            // Manejar el caso en el que no se encuentra ningún producto
-//            logger.error("No se encontró ningún producto con el nombre especificado.");
-//            // Puedes lanzar una excepción, registrar un error, o manejar de otra forma según sea apropiado.
-//        }
-//        this.pedidoRepository.save(pedido);
-//    }
-
-//    @Override
-//    public void confirmedDelivery(Pedido updatePedido) {
-//        Pedido pedido = this.pedidoRepository.findById(updatePedido.getId()).orElse(null);
-//        if (pedido != null) {
-//            pedido.setConfirmedDelivery(updatePedido.isConfirmedDelivery());
-//            this.pedidoRepository.save(pedido);
-//            logger.info("updating successfully");
-//        } else {
-//            logger.info("Error updating for pedido null");
-//        }
-//    }
 }

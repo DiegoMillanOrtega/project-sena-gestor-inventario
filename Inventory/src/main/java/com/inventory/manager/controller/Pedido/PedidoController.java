@@ -38,10 +38,15 @@ public class PedidoController {
 
             Pedido pedido = request.getPedido(); //Obtener pedido
             List<Inventory> productos = request.getProductos(); //Obtener los productos
+            pedido.setPedidoDetalles(request.getPedido().getPedidoDetalles());
             List<Integer> cantidades = request.getCantidades(); //Obtener las cantidades
-            Client client = clienteRepository.findById(request.getPedido().getClient().getId()).orElse(null);
 
+            Client client = clienteRepository.findById(pedido.getClient().getId()).orElse(null);
+            if (client == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
             pedido.setClient(client);
+
             Pedido savedPedido = pedidoService.savePedido(pedido, productos, cantidades);
             return new ResponseEntity<>(savedPedido, HttpStatus.CREATED);
 
@@ -53,7 +58,7 @@ public class PedidoController {
 //                pedido.setClient(client);
 //            }
         } catch (Exception e) {
-            logger.info("Hola soy exception");
+            logger.error("Error al guardar el pedido: ", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     }

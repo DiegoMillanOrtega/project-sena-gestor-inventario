@@ -19,7 +19,8 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public List<Category> findByCategory(String category) {
-        return this.categoryRepository.findByCategoryContaining(category);
+        return null;
+        //return this.categoryRepository.findByCategoryContaining(category);
     }
 
     @Override
