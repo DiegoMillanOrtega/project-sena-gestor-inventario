@@ -24,6 +24,28 @@ import { ToastsService } from '../../../../../service/toasts.service';
   styleUrl: './list-pedidos.component.css',
 })
 export class ListPedidosComponent implements OnInit {
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement
+    ) {
+      return; // No hacer nada si el foco está en un input o textarea
+    }
+
+    if (event.key === '1') {
+      this.showAndAddProducts();
+    }
+    if (event.key === '2') {
+      this.showSelectedProducts();
+    }
+    if (event.key === '3') {
+      this.showClients();
+    }
+  }
+
+
   private clientService = inject(ClientService);
   private inventoryService = inject(InventoryService);
   private pedidoService = inject(PedidoService);
