@@ -49,10 +49,10 @@ public class InventoryController {
         return inventoryService.buscarProductosPorNombre(product);
     }
 
-    @GetMapping("/searchCategory")
-    public List<Inventory> searchProductByCategory(@RequestParam String category) {
-        return iInventoryRepository.findByCategoryContaining(category);
-    }
+//    @GetMapping("/searchCategory")
+//    public List<Inventory> searchProductByCategory(@RequestParam String category) {
+//        return iInventoryRepository.findByCategoryContaining(category);
+//    }
 
     @PostMapping("/postProduct")
     public ResponseEntity<String> saveProduct(@RequestBody Inventory product) {

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
     List<Inventory> findByProductContaining(String product);
-    List<Inventory> findByCategoryContaining(String category);
+    //List<Inventory> findByCategoryContaining(String category);
 
 }

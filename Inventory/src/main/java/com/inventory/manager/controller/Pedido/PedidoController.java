@@ -1,7 +1,8 @@
 package com.inventory.manager.controller.Pedido;
 
 import com.inventory.manager.controller.UsersController;
-import com.inventory.manager.model.Pedido;
+import com.inventory.manager.model.*;
+import com.inventory.manager.repository.IClienteRepository;
 import com.inventory.manager.service.Pedido.PedidoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,9 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
+    @Autowired
+    private IClienteRepository clienteRepository;
+
     @GetMapping("/getPedidos")
     public List<Pedido> pedidoList() {
         logger.info("Return pedidoList");
@@ -28,28 +32,35 @@ public class PedidoController {
     }
 
     @PostMapping("/savePedido")
-    public ResponseEntity<String> savePedido(@RequestBody Pedido pedido) {
+    public ResponseEntity<Pedido> savePedido(@RequestBody PedidoRequest request) {
         try {
-            this.pedidoService.savePedido(pedido);
-            logger.info("Saved pedido");
-            return ResponseEntity.ok("Saved pedido successfully");
+            logger.info("Llegue aqui!!!");
+
+            Pedido pedido = request.getPedido(); //Obtener pedido
+            List<Inventory> productos = request.getProductos(); //Obtener los productos
+            pedido.setPedidoDetalles(request.getPedido().getPedidoDetalles());
+            List<Integer> cantidades = request.getCantidades(); //Obtener las cantidades
+
+            Client client = clienteRepository.findById(pedido.getClient().getId()).orElse(null);
+            if (client == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            pedido.setClient(client);
+
+            Pedido savedPedido = pedidoService.savePedido(pedido, productos, cantidades);
+            return new ResponseEntity<>(savedPedido, HttpStatus.CREATED);
+
+            // Verificar si el cliente es un objeto completo o solo un ID
+//            if (pedido.getClient() != null && pedido.getClient().getId() != null) {
+//                Long clientId = pedido.getClient().getId();
+//                // Buscar el cliente completo a partir del ID y asignarlo al pedido
+//                Client client = clienteRepository.findById(clientId).orElse(null);
+//                pedido.setClient(client);
+//            }
         } catch (Exception e) {
-            logger.info("Error saving pedido",
-                    e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving pedido");
-        }
+            logger.error("Error al guardar el pedido: ", e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     }
 
-    @PostMapping("/confirmedDelivery")
-    public ResponseEntity<String> confirmedDelivery(@RequestBody Pedido pedido) {
-        try {
-            this.pedidoService.confirmedDelivery(pedido);
-            logger.info("Delivery confirmed");
-            return ResponseEntity.ok("Delivery confirmed");
-        } catch (Exception e) {
-            logger.info("Error confirming delivery",
-                    e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error confirming delivery");
-        }
-    }
 }

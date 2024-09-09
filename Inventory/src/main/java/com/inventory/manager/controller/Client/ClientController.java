@@ -1,6 +1,6 @@
 package com.inventory.manager.controller.Client;
 
-import com.inventory.manager.controller.UsersController;
+
 import com.inventory.manager.model.Client;
 import com.inventory.manager.service.Client.ClienteService;
 import org.slf4j.Logger;
