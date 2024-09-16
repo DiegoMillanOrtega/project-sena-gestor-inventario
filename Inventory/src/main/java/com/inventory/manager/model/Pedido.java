@@ -20,10 +20,8 @@ public class Pedido {
     @JoinColumn(name = "id_cliente")
     private Client client;
 
-    private String paymentType;
-
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<PedidoDetalle> pedidoDetalles;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "forma_pago_ID")
+    private FormaPago paymentType;
 
 }
