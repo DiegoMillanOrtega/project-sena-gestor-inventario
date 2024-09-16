@@ -26,14 +26,18 @@ export class AlertsService {
       title: titulo,
       text: mensaje,
       icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
     });
   }
 
-  mostrarMensajeError(mensaje: string): void {
+  mostrarMensajeError(titulo?: string, mensaje?: string): void {
     Swal.fire({
-      title: '¡Error!',
+      title: titulo,
       text: mensaje,
       icon: 'error',
+      showConfirmButton: false,
+      timer: 1500
     });
   }
 
@@ -124,7 +128,7 @@ export class AlertsService {
 
       const pageItems = getPageItems(page);
       pageItems.forEach((item, index) => {
-        tableHtml += `<tr>`;
+        tableHtml += `<tr data-id="${item.id}">`;
         columns.forEach((column) => {
           // if (column.key === 'category' && typeof item[column.key] === 'object') {
           //   tableHtml += `<td>${item[column.key].category}</td>`;
