@@ -1,20 +1,22 @@
 package com.inventory.manager.controller.Pedido.DetallePedido;
 
-import com.inventory.manager.controller.UsersController;
-import com.inventory.manager.model.Inventory;
-import com.inventory.manager.model.Pedido;
+
 import com.inventory.manager.model.PedidoDetalle;
+import com.inventory.manager.model.modelRequest.PedidoDetalleRequest;
 import com.inventory.manager.repository.IInventoryRepository;
 import com.inventory.manager.repository.IPedidoRepository;
 import com.inventory.manager.service.PedidoDetalle.PedidoDetalleService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/pedidoDetalle")
@@ -31,18 +33,23 @@ public class PedidoDetalleController {
 
     @Autowired
     private IPedidoRepository pedidoRepository;
-    @PostMapping("/savePedidoDetalle")
-    public ResponseEntity<?> savePedidoDetalle(@Validated @RequestBody PedidoDetalle pedidoDetalle, BindingResult result) {
 
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getFieldErrors());
+    @PostMapping("/savePedidoDetalle")
+    public ResponseEntity<List<PedidoDetalle>> savePedidoDetalle(@RequestBody PedidoDetalleRequest request) {
+
+        List<PedidoDetalle> detallesGuardados = new ArrayList<>();
+
+        for (int i = 0; i < request.getProductos().size(); i++) {
+            PedidoDetalle detalle = new PedidoDetalle();
+            detalle.setPedido(request.getPedido());
+            detalle.setProducto(request.getProductos().get(i));
+            detalle.setCantidades(request.getProductos().get(i).getStock());
+
+            PedidoDetalle savedDetalle = pedidoDetalleService.savePedidoDetalle(detalle);
+            detallesGuardados.add(savedDetalle);
         }
-        try {
-            PedidoDetalle savedPedidoDetalle = this.pedidoDetalleService.savePedidoDetalle(pedidoDetalle);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedPedidoDetalle);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar el detalle del pedido");
-        }
+        // Retornar todos los detalles guardados al final del ciclo
+        return new ResponseEntity<>(detallesGuardados, HttpStatus.CREATED);
     }
 
 }

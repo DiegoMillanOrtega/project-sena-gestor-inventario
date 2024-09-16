@@ -1,5 +1,6 @@
 package com.inventory.manager.service.PedidoDetalle;
 
+import com.inventory.manager.ExcepcionesPersonalizadas.DataBaseException;
 import com.inventory.manager.model.PedidoDetalle;
 import com.inventory.manager.repository.IPedidoDetalleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,14 @@ public class PedidoDetalleService implements IPedidoDetalleService{
     private IPedidoDetalleRepository pedidoDetalleRepository;
     @Override
     public PedidoDetalle savePedidoDetalle(PedidoDetalle pedidoDetalle) {
-        PedidoDetalle savedPedidoDetalle = pedidoDetalleRepository.save(pedidoDetalle);
-        for (PedidoDetalle detalle: pedidoDetalle.getPedido().getPedidoDetalles()) {
-            detalle.setId(pedidoDetalle.getId());
-            detalle.setProducto(detalle.getProducto());
-            pedidoDetalleRepository.save(detalle);
+        if (pedidoDetalle == null) {
+            throw new IllegalArgumentException("La entidad pedidoDetalle no puede ser nula.");
         }
-        return savedPedidoDetalle;
+
+        try {
+            return pedidoDetalleRepository.save(pedidoDetalle);
+        } catch (Exception e) {
+            throw new DataBaseException("Error al guarda el detalle del pedido", e);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.inventory.manager.service.Pedido;
 
+import com.inventory.manager.ExcepcionesPersonalizadas.DataBaseException;
 import com.inventory.manager.controller.Pedido.PedidoController;
 import com.inventory.manager.model.Client;
 import com.inventory.manager.model.Inventory;
@@ -41,36 +42,14 @@ public class PedidoService implements IPedidoService{
     }
 
     @Override
-    public Pedido savePedido(Pedido pedido, List<Inventory> productos, List<Integer> cantidades) {
-        // Crear una lista para los detalles del pedido
-        List<PedidoDetalle> detalles = new ArrayList<>();
-
-        // Verificar que el tamaño de productos y cantidades coincida
-        if (productos.size() != cantidades.size()) {
-            throw new IllegalArgumentException("La cantidad de productos y cantidades no coinciden");
+    public Pedido savePedido(Pedido pedido) {
+        if (pedido == null) {
+            throw new IllegalArgumentException("La entidad Pedido no puede ser nula.");
         }
-
-        // Asignar los productos y cantidades al pedido
-        for (int i = 0; i < productos.size(); i++) {
-            Inventory producto = productos.get(i);
-            Integer cantidad = cantidades.get(i);
-
-            // Crear un nuevo detalle de pedido
-            PedidoDetalle detalle = new PedidoDetalle();
-            detalle.setPedido(pedido);
-            detalle.setProducto(producto);
-            detalle.setCantidades(cantidad);
-
-            detalles.add(detalle);
+        try {
+            return pedidoRepository.save(pedido);
+        } catch (Exception e) {
+            throw new DataBaseException("Error al guarda el pedido", e);
         }
-        // Establecer los detalles del pedido al objeto pedido
-        pedido.setPedidoDetalles(detalles);
-
-        // Si el cliente no está en la base de datos, lanzamos una excepción
-        if (pedido.getClient() == null || !clienteRepository.existsById(pedido.getClient().getId())) {
-            throw new IllegalArgumentException("El cliente no existe");
-        }
-
-        return pedidoRepository.save(pedido);
     }
 }

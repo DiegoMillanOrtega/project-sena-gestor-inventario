@@ -9,6 +9,6 @@ import java.util.List;
 public interface IPedidoService {
     public List<Pedido> findAllPedido();
 
-    public Pedido savePedido(Pedido pedido, List<Inventory> productos, List<Integer> cantidades);
+    public Pedido savePedido(Pedido pedido);
 
 }

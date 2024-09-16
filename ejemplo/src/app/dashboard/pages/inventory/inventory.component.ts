@@ -49,7 +49,7 @@ export class InventoryComponent implements OnInit {
 
   ngOnInit(): void {
     this._inventoryService.getInventoryList().subscribe({
-      next: (data) => (this.inventoryList = data),
+      next: (data) => {this.inventoryList = data , console.log(data)},
       error: (error) =>
         console.error('Error al obtener la lista de inventario', error),
       complete: () => (this.loading = false),

@@ -32,31 +32,11 @@ public class PedidoController {
     }
 
     @PostMapping("/savePedido")
-    public ResponseEntity<Pedido> savePedido(@RequestBody PedidoRequest request) {
+    public ResponseEntity<Pedido> savePedido(@RequestBody Pedido pedido) {
         try {
-            logger.info("Llegue aqui!!!");
-
-            Pedido pedido = request.getPedido(); //Obtener pedido
-            List<Inventory> productos = request.getProductos(); //Obtener los productos
-            pedido.setPedidoDetalles(request.getPedido().getPedidoDetalles());
-            List<Integer> cantidades = request.getCantidades(); //Obtener las cantidades
-
-            Client client = clienteRepository.findById(pedido.getClient().getId()).orElse(null);
-            if (client == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            pedido.setClient(client);
-
-            Pedido savedPedido = pedidoService.savePedido(pedido, productos, cantidades);
+            Pedido savedPedido = pedidoService.savePedido(pedido);
             return new ResponseEntity<>(savedPedido, HttpStatus.CREATED);
 
-            // Verificar si el cliente es un objeto completo o solo un ID
-//            if (pedido.getClient() != null && pedido.getClient().getId() != null) {
-//                Long clientId = pedido.getClient().getId();
-//                // Buscar el cliente completo a partir del ID y asignarlo al pedido
-//                Client client = clienteRepository.findById(clientId).orElse(null);
-//                pedido.setClient(client);
-//            }
         } catch (Exception e) {
             logger.error("Error al guardar el pedido: ", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
