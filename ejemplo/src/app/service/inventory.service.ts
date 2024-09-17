@@ -24,8 +24,8 @@ export class InventoryService {
     return this.http.get(`${this.apiUrl}/search?product=${product}`);
   }
 
-  searchByCategory(category: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/searchCategory?category=${category}`);
+  searchByCategory(category: string): Observable<Inventory[]> {
+    return this.http.get<Inventory[]>(`${this.apiUrl}/searchCategory/${category}`);
   }
 
   saveProduct(product: Inventory): Observable<any> {
