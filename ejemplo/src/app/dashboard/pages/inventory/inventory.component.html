@@ -1,85 +1,84 @@
 <header>Lista de productos</header>
 
-<div class="container mb-3">
-  <nav class="navbar bg-body-tertiary">
-    <div class="container-fluid">
-      <div class="d-flex" role="search">
-        <!-- <input
-          class="form-control me-2"
-          type="search"
-          placeholder="Buscar por nombre"
-          aria-label="Search"
-          [(ngModel)]="productName"
-          (keydown.enter)="buscarProductos()"
-        /> -->
-        <div class="input-group">
-          <input
-          class="form-control "
-          type="search"
-          placeholder="Buscar por nombre"
-          aria-label="Search"
-          [(ngModel)]="productName"
-          (keydown.enter)="buscarProductos()"
-          />
-          <button
-          class="btn btn-outline-success"
-          type="submit"
-          (click)="buscarProductos()"
-        >
-          <app-icons-svg [nombreIcono]="'search'" />
-        </button>
-        </div>
-        <!-- <button
-          class="btn btn-outline-success w-50"
-          type="submit"
-          (click)="buscarProductos()"
-        >
-          <app-icons-svg [nombreIcono]="'search'" />
-        </button> -->
-        
-        <div class="dropdown">
-          <button
-            class="btn btn-secondary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            @if (productCategory.valueOf()) {
-            {{ productCategory }}
-            } @else { Filtrar por categoría }
-          </button>
-          <ul class="dropdown-menu" style="max-height: 110px; overflow-y: auto">
-            <!-- <li><a class="dropdown-item" (click)="buscarProductosByCategory('Limpieza')">Limpieza</a></li>
-            <li><a class="dropdown-item" (click)="buscarProductosByCategory('Comida')">Comida</a></li>
-            <li><a class="dropdown-item" (click)="buscarProductosByCategory('Bebida')">Bebida</a></li> -->
-            @for (category of categoryList; track $index) {
-            <li>
-              <a
-                class="dropdown-item"
-                (click)="buscarProductosByCategory(category.category)"
-                > {{ category.category }}</a
-              >
-            </li>
-            }
-          </ul>
-        </div>
-
-
-        <button type="button" class="btn btn-primary" routerLink="addProduct">
-          <app-icons-svg [nombreIcono]="'add'" />
-        </button>
-
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    <div class="d-flex" role="search">
+      <!-- <input
+        class="form-control me-2"
+        type="search"
+        placeholder="Buscar por nombre"
+        aria-label="Search"
+        [(ngModel)]="productName"
+        (keydown.enter)="buscarProductos()"
+      /> -->
+      <div class="input-group">
+        <input
+        class="form-control "
+        type="search"
+        placeholder="Buscar por nombre"
+        aria-label="Search"
+        [(ngModel)]="productName"
+        (keydown.enter)="buscarProductos()"
+        />
         <button
-          class="btn btn-secondary"
-          (click)="submitOrder()"
-          routerLink="listPedidos"
-        >
-          <app-icons-svg [nombreIcono]="'delivery'" />
-        </button>
+        class="btn btn-outline-success"
+        type="submit"
+        (click)="buscarProductos()"
+      >
+        <app-icons-svg [nombreIcono]="'search'" />
+      </button>
       </div>
+      <!-- <button
+        class="btn btn-outline-success w-50"
+        type="submit"
+        (click)="buscarProductos()"
+      >
+        <app-icons-svg [nombreIcono]="'search'" />
+      </button> -->
+      
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          @if (productCategory.valueOf()) {
+          {{ productCategory }}
+          } @else { Filtrar por categoría }
+        </button>
+        <ul class="dropdown-menu" style="max-height: 110px; overflow-y: auto">
+          <!-- <li><a class="dropdown-item" (click)="buscarProductosByCategory('Limpieza')">Limpieza</a></li>
+          <li><a class="dropdown-item" (click)="buscarProductosByCategory('Comida')">Comida</a></li>
+          <li><a class="dropdown-item" (click)="buscarProductosByCategory('Bebida')">Bebida</a></li> -->
+          @for (category of categoryList; track $index) {
+          <li>
+            <a
+              class="dropdown-item"
+              (click)="buscarProductosByCategory(category.category)"
+              > {{ category.category }}</a
+            >
+          </li>
+          }
+        </ul>
+      </div>
+
+
+      <button type="button" class="btn btn-primary" routerLink="addProduct">
+        <app-icons-svg [nombreIcono]="'add'" />
+      </button>
+
+      <button
+        class="btn btn-secondary"
+        (click)="submitOrder()"
+        routerLink="listPedidos"
+      >
+        <app-icons-svg [nombreIcono]="'delivery'" />
+      </button>
     </div>
-  </nav>
-</div>
+  </div>
+</nav>
+
 
 @if (loading) {
 <ng-container>
