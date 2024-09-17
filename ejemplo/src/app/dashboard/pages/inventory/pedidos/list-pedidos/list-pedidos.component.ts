@@ -256,23 +256,32 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   removerProductos(index: number) {
+
+    const product = this.selectedProducts[index].product;
+    
     this.toastService.showToast(
       'Eliminado',
       `El producto "${this.selectedProducts[index].product}" fue eliminado.`,
       'danger',
       2000
-    );
-
+    )
     this.selectedProducts.splice(index, 1);
 
-    //Limpiar inputs
-    this.labelCliente.get('product')?.setValue('');
-    this.labelCliente.get('price')?.setValue('');
-    this.labelCliente.get('stock')?.setValue('');
-    this.labelCliente.get('stock')?.disable();
+    if (
+      product === this.labelCliente.get('product')?.value
+    ) {
+     
+      //Limpiar inputs
+      this.labelCliente.get('product')?.setValue('');
+      this.labelCliente.get('price')?.setValue('');
+      this.labelCliente.get('stock')?.setValue('');
+      this.labelCliente.get('stock')?.disable();
 
-    this.resetIndividualControls();
-    this.showSelectedProducts();
+      this.resetIndividualControls();
+      this.showSelectedProducts();
+    }
+    
+
   }
 
   seleccionarProductos(selectedProducts: Inventory[]): void {
@@ -381,7 +390,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   resetIndividualControls() {
-    this.labelCliente.get('product')?.reset(); 
+    this.labelCliente.get('product')?.reset();
     this.labelCliente.get('price')?.reset();
     this.labelCliente.get('stock')?.reset();
   }
