@@ -130,11 +130,11 @@ export class AlertsService {
       pageItems.forEach((item, index) => {
         tableHtml += `<tr data-id="${item.id}">`;
         columns.forEach((column) => {
-          // if (column.key === 'category' && typeof item[column.key] === 'object') {
-          //   tableHtml += `<td>${item[column.key].category}</td>`;
-          // } else {
+          if (column.key === 'category' && typeof item[column.key] === 'object') {
+             tableHtml += `<td>${item[column.key].category}</td>`;
+          } else {
             tableHtml += `<td>${item[column.key]}</td>`;
-          // }
+           }
         });
 
         if (actionButtons || removeItemCallback) {
