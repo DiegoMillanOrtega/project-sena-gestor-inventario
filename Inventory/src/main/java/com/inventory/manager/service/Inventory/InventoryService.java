@@ -43,4 +43,16 @@ public class InventoryService implements IInventoryService{
     public List<Inventory> buscarProductosPorNombre(String product) {
         return iInventoryRepository.findByProductContaining(product);
     }
+
+    @Override
+    public List<Inventory> findByProductsByCategory(String category) {
+        if (category.isEmpty()) {
+            return null;
+        }
+        try {
+            return iInventoryRepository.findByProductsByCategory(category);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("No se Encontró un Producto con esa Categoria.");
+        }
+    }
 }

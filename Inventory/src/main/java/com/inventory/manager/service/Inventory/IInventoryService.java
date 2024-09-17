@@ -12,4 +12,6 @@ public interface IInventoryService {
     public Optional<Inventory> getProductById(Long id);
 
     List<Inventory> buscarProductosPorNombre(String nombre);
+
+    List<Inventory> findByProductsByCategory (String category);
 }
