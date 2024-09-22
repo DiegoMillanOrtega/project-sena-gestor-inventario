@@ -27,6 +27,9 @@ import { ToastsService } from '../../../../../service/toasts.service';
 import { FormaPagoService } from '../../../../../service/forma-pago.service';
 import { FormaPago } from '../../../../../model/forma-pago.model';
 import { PedidoDetalle } from '../../../../../model/pedidoDetalle.model';
+import { Alert } from 'bootstrap';
+import Swal from 'sweetalert2';
+import { Modal } from 'bootstrap';
 
 @Component({
   selector: 'app-list-pedidos',
@@ -184,30 +187,32 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.productoIds.push(this.selectedProducts[index].id);
       this.cantidades.push(this.selectedProducts[index].stock);
     }
+    
+   
 
-    this.pedidoService.savePedido(pedido).subscribe(
-      (response) => {
-        console.log(response);
-        this.pedidoDetalleService.savePedidoDetalle(
-          response,
-          this.selectedProducts,
-          this.cantidades
-        );
-        console.log(response);
-        this.pedidoDetalleService
-          .savePedidoDetalle(response, this.selectedProducts, this.cantidades)
-          .subscribe(
-            (response) => console.log(response),
-            (error) =>
-              console.error(
-                'error al guardar los detalles del pedido: ' + error
-              )
-          );
-      },
-      (error) => {
-        console.error('Error al guardar el pedido', error);
-      }
-    );
+    // this.pedidoService.savePedido(pedido).subscribe(
+    //   (response) => {
+    //     console.log(response);
+    //     this.pedidoDetalleService.savePedidoDetalle(
+    //       response,
+    //       this.selectedProducts,
+    //       this.cantidades
+    //     );
+    //     console.log(response);
+    //     this.pedidoDetalleService
+    //       .savePedidoDetalle(response, this.selectedProducts, this.cantidades)
+    //       .subscribe(
+    //         (response) => console.log(response),
+    //         (error) =>
+    //           console.error(
+    //             'error al guardar los detalles del pedido: ' + error
+    //           )
+    //       );
+    //   },
+    //   (error) => {
+    //     console.error('Error al guardar el pedido', error);
+    //   }
+    // );
   }
 
   selectedCliente(trElement: HTMLTableRowElement): void {
@@ -475,5 +480,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     } else {
       this.alerts.mostrarMensajeError('No hay productos');
     }
+  }
+  showModal() {
+    const modalElement = document.getElementById('exampleModal');
+    if (modalElement!= null) {
+      modalElement.style.display = 'block'
+    }
+    
   }
 }
