@@ -33,7 +33,6 @@ import { FormaPago } from '../../../../../model/forma-pago.model';
 import { PedidoDetalle } from '../../../../../model/pedidoDetalle.model';
 import Swal from 'sweetalert2';
 import * as bootstrap from 'bootstrap';
-import { ModalServiceService } from '../../../../../service/modal-service.service';
 import { AppComponent } from '../../../../../app.component';
 import { Modal } from 'bootstrap';
 
@@ -75,7 +74,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   private toastService = inject(ToastsService);
   private formaPagoService = inject(FormaPagoService);
   private viewContainerRef = inject(ViewContainerRef);
-  private modalService = inject(ModalServiceService)
+
 
   selectedProducts: Inventory[] = [];
   Products: Inventory[] = [];
@@ -103,6 +102,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   stockModificado = false; // Flag para controlar si el stock ha sido modificado
   modalInstance: any;
   pedido?: Pedido;
+  clienteSeleccionado?: Client;
 
   constructor(private form: FormBuilder) {
     this.labelCliente = form.group({
@@ -274,8 +274,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     if (!this.clients.some((p) => p.id === index)) {
       this.labelCliente.get('client')?.setValue(cliente.id);
       this.clienteEncontrado = true;
-      this.labelCliente.get('client')?.setValue(cliente.id);
-      this.clienteEncontrado = true;
+      this.clienteSeleccionado = cliente;
       this.clients.splice(index, 1);
       this.alerts.cerrarAlerta();
     }

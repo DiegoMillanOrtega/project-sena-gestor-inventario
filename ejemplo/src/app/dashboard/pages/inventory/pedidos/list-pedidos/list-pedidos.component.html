@@ -177,80 +177,6 @@
   </form>
 </div>
 
-<ng-template #modal>
-  <div class="container mt-4">
-    <!-- Información del Cliente -->
-    <div class="card">
-      <div class="card-header bg-primary text-white">
-        Información del Pedido
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <h5 class="card-title">Datos del Cliente</h5>
-            <p class="card-text"><strong>Nombre:</strong> Juan Pérez</p>
-            <p class="card-text">
-              <strong>Correo:</strong> juan.perezexample.com
-            </p>
-            <p class="card-text"><strong>Teléfono:</strong> 123-456-7890</p>
-          </div>
-          <div class="col-md-6">
-            <h5 class="card-title">Datos del Pedido</h5>
-            <p class="card-text"><strong>Número de Pedido:</strong> 000123</p>
-            <p class="card-text"><strong>Fecha:</strong> 19/09/2024</p>
-            <p class="card-text"><strong>Estado:</strong> Pendiente</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Productos Seleccionados -->
-    <div class="card mt-4">
-      <div class="card-header bg-success text-white">
-        Productos en el Pedido
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-bordered">
-            <thead class="thead-light">
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio Unitario</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (producto of selectedProductss; track $index) {
-                <tr>
-                  <td>{{ producto.product }}</td>
-                  <td> {{ producto.stock }}</td>
-                  <td>{{ producto.price }}</td>
-                  <td>{{ producto.price }}</td>
-                </tr>              
-              }
-            </tbody>
-            <tfoot>
-              <tr>
-                <th colspan="3" class="text-right">Total:</th>
-                <th>$190</th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </div>
-    <!-- Acciones -->
-    <div class="text-center mt-4">
-      <button class="btn btn-success mr-2">Aprobar Pedido</button>
-      <button class="btn btn-danger">Cancelar Pedido</button>
-    </div>
-  </div>
-</ng-template>
-
-<button (click)="sendPedido()">
-  ver modal
-</button>
 
 
 <!-- Modal -->
@@ -272,11 +198,11 @@
               <div class="row">
                 <div class="col-md-6">
                   <h5 class="card-title">Datos del Cliente</h5>
-                  <p class="card-text"><strong>Nombre:</strong> {{ pedido?.client?.name || pedido?.client?.lastName}}</p>
+                  <p class="card-text"><strong>Nombre:</strong> {{ clienteSeleccionado?.name || clienteSeleccionado?.lastName}}</p>
                   <p class="card-text">
-                    <strong>Correo:</strong> {{pedido?.client?.email}}
+                    <strong>Correo:</strong> {{clienteSeleccionado?.email}}
                   </p>
-                  <p class="card-text"><strong>Teléfono:</strong> {{pedido?.client?.phoneNumber}}</p>
+                  <p class="card-text"><strong>Teléfono:</strong> {{clienteSeleccionado?.phoneNumber}}</p>
                 </div>
                 <div class="col-md-6">
                   <h5 class="card-title">Datos del Pedido</h5>
