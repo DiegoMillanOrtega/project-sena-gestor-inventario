@@ -20,6 +20,7 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "date-fns": "^4.1.0",
     "rxjs": "~7.8.0",
     "sme": "./node_modules/.bin/source-map-explorer",
     "sweetalert2": "^11.10.5",

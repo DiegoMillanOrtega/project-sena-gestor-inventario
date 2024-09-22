@@ -35,6 +35,7 @@ import Swal from 'sweetalert2';
 import * as bootstrap from 'bootstrap';
 import { AppComponent } from '../../../../../app.component';
 import { Modal } from 'bootstrap';
+import { format } from 'date-fns';
 
 
 @Component({
@@ -103,18 +104,20 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   modalInstance: any;
   pedido?: Pedido;
   clienteSeleccionado?: Client;
+  fechaActual?: String;
 
   constructor(private form: FormBuilder) {
     this.labelCliente = form.group({
       id: ['', Validators.required],
-      product: ['', Validators.required],
+      product: [''],
       category: ['', Validators.required],
-      price: ['', Validators.required],
+      price: [''],
       address: ['', Validators.required],
-      stock: ['', [Validators.required, this.stockValidator.bind(this)]],
+      stock: ['', this.stockValidator.bind(this)],
       paymentType: ['', Validators.required],
       client: ['', Validators.required],
     });
+    this.fechaActual = format(new Date(), 'dd-MM-yyyy');
   }
 
   ngAfterViewInit(): void {
@@ -222,47 +225,37 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.productoIds.push(this.selectedProducts[index].id);
       this.cantidades.push(this.selectedProducts[index].stock);
     }
-    this.showModal();
 
-
-    // // Renderiza el contenido del ng-template
-    // const view = this.viewContainerRef.createEmbeddedView(this.modalExample);
-    // const modalContent = this.modalExample.elementRef.nativeElement.innerHTML;
-    // // Convierte el contenido renderizado en un string HTML
-    // const htmlContent = view.rootNodes.map((node) => node.outerHTML).join('');
-    // console.log(this.selectedProducts.length)
-    // Swal.fire({
-    //   html: htmlContent,
-    //   width: '70%',
-    //   didOpen: () => {
-    //     // Limpia la vista después de crearla
-    //     this.viewContainerRef.clear();
-    //   },
-    // });
-
-    // this.pedidoService.savePedido(pedido).subscribe(
-    //   (response) => {
-    //     console.log(response);
-    //     this.pedidoDetalleService.savePedidoDetalle(
-    //       response,
-    //       this.selectedProducts,
-    //       this.cantidades
-    //     );
-    //     console.log(response);
-    //     this.pedidoDetalleService
-    //       .savePedidoDetalle(response, this.selectedProducts, this.cantidades)
-    //       .subscribe(
-    //         (response) => console.log(response),
-    //         (error) =>
-    //           console.error(
-    //             'error al guardar los detalles del pedido: ' + error
-    //           )
-    //       );
-    //   },
-    //   (error) => {
-    //     console.error('Error al guardar el pedido', error);
-    //   }
-    // );
+    this.pedidoService.savePedido(pedido).subscribe(
+      (response) => {
+        console.log(response);
+        this.pedidoDetalleService.savePedidoDetalle(
+          response,
+          this.selectedProducts,
+          this.cantidades
+        );
+        console.log(response);
+        this.pedidoDetalleService
+          .savePedidoDetalle(response, this.selectedProducts, this.cantidades)
+          .subscribe(
+            (response) => {
+              console.log(response);
+              this.labelCliente.reset()
+              this.closeModal();
+              this.toastService.showToast('¡Pedido Guardado!', 'El pedido fue guardado exitosamente', 'success');
+              this.loadClients()
+              this.loadProducts()
+            },
+            (error) =>
+              console.error(
+                'error al guardar los detalles del pedido: ' + error
+              )
+          );
+      },
+      (error) => {
+        console.error('Error al guardar el pedido', error);
+      }
+    );
   }
 
   selectedCliente(trElement: HTMLTableRowElement): void {
@@ -525,13 +518,15 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     }
   }
   showModal() {
-    this.modalInstance.show();
+    if (this.labelCliente.valid) {
+
+      this.modalInstance.show();
+    } else {
+      this.alerts.mostrarMensajeError('Error el form es invalid')
+    }
   }
 
   closeModal() {
-    const modal = document.getElementById('exampleModal');
-    if (modal != null) {
-      modal.style.display = 'none';
-    }
+    this.modalInstance.hide();
   }
 }
