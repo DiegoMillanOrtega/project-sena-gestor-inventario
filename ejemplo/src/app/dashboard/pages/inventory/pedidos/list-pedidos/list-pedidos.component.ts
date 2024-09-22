@@ -2,9 +2,13 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
+  Input,
   OnInit,
+  TemplateRef,
   ViewChild,
+  ViewContainerRef,
   inject,
 } from '@angular/core';
 import { Pedido } from '../../../../../model/pedido.model';
@@ -27,9 +31,12 @@ import { ToastsService } from '../../../../../service/toasts.service';
 import { FormaPagoService } from '../../../../../service/forma-pago.service';
 import { FormaPago } from '../../../../../model/forma-pago.model';
 import { PedidoDetalle } from '../../../../../model/pedidoDetalle.model';
-import { Alert } from 'bootstrap';
 import Swal from 'sweetalert2';
+import * as bootstrap from 'bootstrap';
+import { ModalServiceService } from '../../../../../service/modal-service.service';
+import { AppComponent } from '../../../../../app.component';
 import { Modal } from 'bootstrap';
+
 
 @Component({
   selector: 'app-list-pedidos',
@@ -37,6 +44,8 @@ import { Modal } from 'bootstrap';
   styleUrl: './list-pedidos.component.css',
 })
 export class ListPedidosComponent implements OnInit, AfterViewInit {
+  
+
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (
@@ -65,6 +74,8 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private toastService = inject(ToastsService);
   private formaPagoService = inject(FormaPagoService);
+  private viewContainerRef = inject(ViewContainerRef);
+  private modalService = inject(ModalServiceService)
 
   selectedProducts: Inventory[] = [];
   Products: Inventory[] = [];
@@ -74,6 +85,10 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   productoIds: number[] = [];
   cantidades: number[] = [];
   formasDePago: FormaPago[] = [];
+  selectedProductss = [
+    { product: 'Producto 1', stock: 2, price: 50 },
+    { product: 'Producto 2', stock: 1, price: 100 }
+  ];
 
   valorTotalPedido: number = 0;
   stockAnterior: number = 0;
@@ -86,6 +101,8 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   clienteEncontrado: boolean = false;
   productoAgregadoToForm: boolean = false;
   stockModificado = false; // Flag para controlar si el stock ha sido modificado
+  modalInstance: any;
+  pedido?: Pedido;
 
   constructor(private form: FormBuilder) {
     this.labelCliente = form.group({
@@ -118,6 +135,14 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     this.loadListPedidos();
     this.loadClients();
     this.loadFormasDePago();
+
+    const modalElement = document.getElementById('productosModal')
+    
+    if (modalElement) {
+      document.body.appendChild(modalElement);
+      this.modalInstance = new Modal(modalElement)
+      
+    }
   }
 
   loadListPedidos(): void {
@@ -174,6 +199,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     return null; // Si es válido, no hay errores
   }
 
+  getTotal():number {
+    return this.selectedProducts.reduce((total, producto) => {
+      return total + (Number(producto.price) * producto.stock);
+    }, 0)
+  }
+
   sendPedido() {
     let pedido: Pedido = {
       price: this.labelCliente.get('price')?.value,
@@ -183,12 +214,31 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         this.formasDePago[this.labelCliente.get('paymentType')?.value],
     };
 
+    this.pedido = pedido;
+    console.log(this.clients)
+    console.log(pedido)
+
     for (let index = 0; index < this.selectedProducts.length; index++) {
       this.productoIds.push(this.selectedProducts[index].id);
       this.cantidades.push(this.selectedProducts[index].stock);
     }
-    
-   
+    this.showModal();
+
+
+    // // Renderiza el contenido del ng-template
+    // const view = this.viewContainerRef.createEmbeddedView(this.modalExample);
+    // const modalContent = this.modalExample.elementRef.nativeElement.innerHTML;
+    // // Convierte el contenido renderizado en un string HTML
+    // const htmlContent = view.rootNodes.map((node) => node.outerHTML).join('');
+    // console.log(this.selectedProducts.length)
+    // Swal.fire({
+    //   html: htmlContent,
+    //   width: '70%',
+    //   didOpen: () => {
+    //     // Limpia la vista después de crearla
+    //     this.viewContainerRef.clear();
+    //   },
+    // });
 
     // this.pedidoService.savePedido(pedido).subscribe(
     //   (response) => {
@@ -261,21 +311,17 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   removerProductos(index: number) {
-
     const product = this.selectedProducts[index].product;
-    
+
     this.toastService.showToast(
       'Eliminado',
       `El producto "${this.selectedProducts[index].product}" fue eliminado.`,
       'danger',
       2000
-    )
+    );
     this.selectedProducts.splice(index, 1);
 
-    if (
-      product === this.labelCliente.get('product')?.value
-    ) {
-     
+    if (product === this.labelCliente.get('product')?.value) {
       //Limpiar inputs
       this.labelCliente.get('product')?.setValue('');
       this.labelCliente.get('price')?.setValue('');
@@ -285,8 +331,6 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.resetIndividualControls();
       this.showSelectedProducts();
     }
-    
-
   }
 
   seleccionarProductos(selectedProducts: Inventory[]): void {
@@ -482,10 +526,13 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     }
   }
   showModal() {
-    const modalElement = document.getElementById('exampleModal');
-    if (modalElement!= null) {
-      modalElement.style.display = 'block'
+    this.modalInstance.show();
+  }
+
+  closeModal() {
+    const modal = document.getElementById('exampleModal');
+    if (modal != null) {
+      modal.style.display = 'none';
     }
-    
   }
 }
