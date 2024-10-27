@@ -4,7 +4,7 @@ import { Pedido } from "./pedido.model";
 
 export interface PedidoDetalle {
     id?: number;
-    pedido: Pedido;
-    producto: Inventory[]; // Enviar solo el ID del producto
-    cantidad: number[];
+    pedido?: Pedido;
+    producto: Inventory; // Enviar solo el ID del producto
+    cantidades?: number;
 }

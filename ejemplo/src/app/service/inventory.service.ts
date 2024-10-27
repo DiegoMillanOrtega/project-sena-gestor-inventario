@@ -18,14 +18,27 @@ export class InventoryService {
 
   getProductId(id: number): Observable<Inventory> {
     return this.http.get<Inventory>(`${this.apiUrl}/getProductById/${id}`, { responseType: 'json' });
-  }  
+  }
+  
+  getOutOfStockProducts(): Observable<Inventory[]> {
+    return this.http.get<Inventory[]>(`${this.apiUrl}/getOutOfStockProducts`)
+  }
 
   searchProductByName(product: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/search?product=${product}`);
   }
 
+  searchProductByNameOutOfStock(product: string): Observable<Inventory[]> {
+    console.log(`${this.apiUrl}/searchOutOfStock/${product}`);
+    return this.http.get<Inventory[]>(`${this.apiUrl}/searchOutOfStock/${product}`);
+  }
+
   searchByCategory(category: string): Observable<Inventory[]> {
     return this.http.get<Inventory[]>(`${this.apiUrl}/searchCategory/${category}`);
+  }
+
+  searchByCategoryOutOfStock(category: string): Observable<Inventory[]> {
+    return this.http.get<Inventory[]>(`${this.apiUrl}/getByProductsByCategoryOutOfStock/${category}`);
   }
 
   saveProduct(product: Inventory): Observable<any> {

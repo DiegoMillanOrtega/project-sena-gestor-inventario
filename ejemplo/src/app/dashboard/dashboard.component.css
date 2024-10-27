@@ -14,15 +14,15 @@ li {
 }
     .right {
         position: absolute;
-        width: 70%;
-        height: 170%;
+        width: 80vw;
+        height: 88vh;
         right: 0;
-        top: -110px;
+        
     }
     .menu {
         display: flex;
-        height: 175%;
-        width: 30%;  
+        height: 88vh;
+        width: 20vw;  
         border-right: 2px solid black;
         z-index: 1;
     }

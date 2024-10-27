@@ -36,7 +36,16 @@ import * as bootstrap from 'bootstrap';
 import { AppComponent } from '../../../../../app.component';
 import { Modal } from 'bootstrap';
 import { format } from 'date-fns';
-
+import {
+  catchError,
+  debounceTime,
+  map,
+  Observable,
+  of,
+  switchMap,
+  timer,
+} from 'rxjs';
+import { PedidoDTO } from '../../../../../model/pedidoDTO.model';
 
 @Component({
   selector: 'app-list-pedidos',
@@ -44,7 +53,7 @@ import { format } from 'date-fns';
   styleUrl: './list-pedidos.component.css',
 })
 export class ListPedidosComponent implements OnInit, AfterViewInit {
-  
+  @ViewChild('modal') formaPagoModal!: ElementRef;
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -76,7 +85,6 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   private formaPagoService = inject(FormaPagoService);
   private viewContainerRef = inject(ViewContainerRef);
 
-
   selectedProducts: Inventory[] = [];
   Products: Inventory[] = [];
   productsNotSelected: Inventory[] = [];
@@ -87,7 +95,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   formasDePago: FormaPago[] = [];
   selectedProductss = [
     { product: 'Producto 1', stock: 2, price: 50 },
-    { product: 'Producto 2', stock: 1, price: 100 }
+    { product: 'Producto 2', stock: 1, price: 100 },
   ];
 
   valorTotalPedido: number = 0;
@@ -96,15 +104,19 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   stock: number = 0;
   //clienteABuscar: number = 0;
   labelCliente: FormGroup;
+  formaPagoForm: FormGroup;
   confirmedDelivery: boolean = false;
   productoAgregadoAlaForma: boolean = false;
   clienteEncontrado: boolean = false;
   productoAgregadoToForm: boolean = false;
   stockModificado = false; // Flag para controlar si el stock ha sido modificado
-  modalInstance: any;
+  private modalInstance: any;
   pedido?: Pedido;
   clienteSeleccionado?: Client;
   fechaActual?: String;
+  validFormaPago: boolean = false;
+  esVisibleModalFormaPago: boolean = false;
+  pedidoList: PedidoDTO[] = [];
 
   constructor(private form: FormBuilder) {
     this.labelCliente = form.group({
@@ -115,9 +127,20 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       address: ['', Validators.required],
       stock: ['', this.stockValidator.bind(this)],
       paymentType: ['', Validators.required],
-      client: ['', Validators.required],
+      client: ['', Validators.required, this.buscarCliente.bind(this)],
     });
     this.fechaActual = format(new Date(), 'dd-MM-yyyy');
+
+    this.formaPagoForm = form.group({
+      formaPago1: [''],
+      formaPago2: [''],
+      numTarjeta1: [''],
+      numTarjeta2: [''],
+      valorPago1: ['', Validators.min(0)],
+      valorPago2: ['', Validators.min(0)],
+      descuento: ['', [Validators.max(100), Validators.min(0)]],
+      totalValor: [''],
+    });
   }
 
   ngAfterViewInit(): void {
@@ -127,6 +150,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         this.labelCliente.get('stock')?.updateValueAndValidity();
       }
     });
+    document.body.appendChild(this.formaPagoModal.nativeElement);
+    this.modalInstance = new Modal(this.formaPagoModal.nativeElement);
+    
+    this.formaPagoModal.nativeElement.addEventListener('hide.bs.modal', () => {
+      this.formaPagoForm.reset();
+    })
   }
 
   ngOnInit(): void {
@@ -139,17 +168,31 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     this.loadClients();
     this.loadFormasDePago();
 
-    const modalElement = document.getElementById('productosModal')
-    
+    const modalElement = document.getElementById('productosModal');
+    // const paymentModal = document.getElementById('paymentModal');
+
     if (modalElement) {
       document.body.appendChild(modalElement);
-      this.modalInstance = new Modal(modalElement)
-      
     }
+    // if (paymentModal) {
+    //   document.body.appendChild(paymentModal);
+    // }
+
+    // const modalElementt = this.paymentModal.nativeElement;
+    // modalElementt.addEventListener('hide.bs.modal', (event: any) => {
+    //   if (this.formaPagoForm.invalid) {
+    //     event.preventDefault(); // Evitar el cierre del modal si el formulario es inválido
+    //     alert('El formulario es inválido. Por favor, completa todos los campos.');
+    //   }
+    // });
   }
 
   loadListPedidos(): void {
-    this.selectedProducts = this.inventoryService.getSelectedProducts();
+    this.pedidoService.getPedidoList().subscribe(
+      pedidos => {this.pedidoList = pedidos, console.log(pedidos)},
+      error => console.error(error)
+    )
+    //this.selectedProducts = this.inventoryService.getSelectedProducts();
   }
 
   loadFormasDePago(): void {
@@ -196,61 +239,77 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   // Validador personalizado para el stock
   stockValidator(control: AbstractControl): ValidationErrors | null {
     if (this.stockModificado && control.value > this.stock) {
-      console.log('Control.value: ', control.value, 'this.stock: ', this.stock);
       return { stockExceeded: true }; // Si el stock ingresado supera el disponible, devuelve un error
     }
     return null; // Si es válido, no hay errores
   }
 
-  getTotal():number {
+  buscarCliente(control: AbstractControl): Observable<ValidationErrors | null> {
+    const id = control.value;
+
+    return timer(500).pipe(
+      switchMap(() => {
+        return this.clientService.findClientById(Number(id)).pipe(
+          map((data) => {
+            console.log('Encontrado: ', data);
+            return data ? null : { clienteNoEncontrado: true }; // null si lo encuentra, objeto de error si no
+          }),
+          catchError((error) => {
+            console.log('Error al buscar cliente: ' + error);
+            return of({ clienteNoEncontrado: true }); // Error de búsqueda lo trata como "no encontrado"
+          })
+        );
+      })
+    );
+  }
+
+  getTotal(): number {
     return this.selectedProducts.reduce((total, producto) => {
-      return total + (Number(producto.price) * producto.stock);
-    }, 0)
+      return total + Number(producto.price) * producto.stock;
+    }, 0);
+  }
+
+  getValorFormaPago(): number {
+    let totalValor =
+      Number(this.formaPagoForm.get('valorPago1')?.value) +
+      Number(this.formaPagoForm.get('valorPago2')?.value);
+    if (this.formaPagoForm.get('descuento')?.value) {
+      const valorDescuento =
+        totalValor * (Number(this.formaPagoForm.get('descuento')?.value) / 100);
+      totalValor -= valorDescuento;
+    }
+    return totalValor;
   }
 
   sendPedido() {
     let pedido: Pedido = {
-      price: this.labelCliente.get('price')?.value,
+      price: this.getTotal(),
       address: this.labelCliente.get('address')?.value,
-      client: this.clients[0],
+      client: this.clienteSeleccionado!,
       paymentType:
         this.formasDePago[this.labelCliente.get('paymentType')?.value],
+      pedidoDetalles: this.selectedProducts.map((product) => {
+        return {
+          producto: product,
+        };
+      }),
     };
 
     this.pedido = pedido;
-    console.log(this.clients)
-    console.log(pedido)
-
-    for (let index = 0; index < this.selectedProducts.length; index++) {
-      this.productoIds.push(this.selectedProducts[index].id);
-      this.cantidades.push(this.selectedProducts[index].stock);
-    }
+    console.log('pedido: ', pedido);
 
     this.pedidoService.savePedido(pedido).subscribe(
       (response) => {
         console.log(response);
-        this.pedidoDetalleService.savePedidoDetalle(
-          response,
-          this.selectedProducts,
-          this.cantidades
+        this.labelCliente.reset();
+        this.loadClients();
+        this.loadProducts();
+        this.loadProductsNotSelected();
+        this.toastService.showToast(
+          'Pedido guardado con éxito',
+          'El pedido ha sido registrado correctamente.',
+          'success'
         );
-        console.log(response);
-        this.pedidoDetalleService
-          .savePedidoDetalle(response, this.selectedProducts, this.cantidades)
-          .subscribe(
-            (response) => {
-              console.log(response);
-              this.labelCliente.reset()
-              this.closeModal();
-              this.toastService.showToast('¡Pedido Guardado!', 'El pedido fue guardado exitosamente', 'success');
-              this.loadClients()
-              this.loadProducts()
-            },
-            (error) =>
-              console.error(
-                'error al guardar los detalles del pedido: ' + error
-              )
-          );
       },
       (error) => {
         console.error('Error al guardar el pedido', error);
@@ -271,24 +330,6 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.clients.splice(index, 1);
       this.alerts.cerrarAlerta();
     }
-  }
-
-  buscarCliente() {
-    const id = this.labelCliente.get('client')?.value;
-
-    this.clientService.findClientById(Number(id)).subscribe({
-      next: (data) => {
-        if (data) {
-          this.clienteEncontrado = true;
-        } else {
-          this.clienteEncontrado = false;
-        }
-      },
-      error: (error) => {
-        console.log('error no se consiguio cliente' + error),
-          (this.clienteEncontrado = false);
-      },
-    });
   }
 
   toggleConfirmation(producto: Inventory): void {
@@ -418,7 +459,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
           'Actualizado',
           `El producto "${this.selectedProducts[index].product}" fue actualizado con éxito`,
           'success',
-          2000
+          5000
         );
       }
     }
@@ -436,18 +477,21 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     this.labelCliente.get('stock')?.reset();
   }
 
+  showModalFormasDePago() {
+    this.validFormaPago = false;
+  }
+
   showClients() {
     const columns = [
       { key: 'id', title: 'Id' },
       { key: 'name', title: 'Nombre' },
       { key: 'lastName', title: 'Apellido' },
-      { key: 'gender', title: 'Genero' },
       { key: 'address', title: 'Dirección' },
       { key: 'email', title: 'Email' },
       { key: 'phoneNumber', title: 'Teléfono' },
     ];
 
-    this.alerts.mostrarTabla(this.clients, 'Clientes', columns, undefined, [
+    this.alerts.mostrarTabla(this.clients, 'Clientes', columns, 'id', undefined, [
       {
         label: 'Añadir',
         callback: (trElement: HTMLTableRowElement) =>
@@ -471,6 +515,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         this.selectedProducts,
         'Productos Seleccionados',
         columns,
+        'id',
         this.removerProductos.bind(this),
         [
           {
@@ -501,6 +546,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         this.productsNotSelected,
         'Agregar Productos no Seleccionados',
         columns,
+        'id',
         undefined,
         [
           {
@@ -517,16 +563,59 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.alerts.mostrarMensajeError('No hay productos');
     }
   }
-  showModal() {
-    if (this.labelCliente.valid) {
+  submitPayment() {
+    this.validFormaPago = true;
+    const valorPago1 = this.formaPagoForm.get('valorPago1')?.value;
+    const valorPago2 = this.formaPagoForm.get('valorPago2')?.value;
+    const formaPago1: string = this.formaPagoForm.get('formaPago1')?.value;
+    const formaPago2:string = this.formaPagoForm.get('formaPago2')?.value;
 
-      this.modalInstance.show();
+    if (formaPago1 || formaPago2) {
+      if (valorPago1 <= 0 && valorPago2 <= 0) {
+        this.validFormaPago = false;
+      }
+      if (formaPago1 === 'Tarjeta Debito' || formaPago1 === 'Tarjeta Credito') {
+        console.log('formaPago1: ',formaPago1, ' valor: ',valorPago1, ' numTarjeta1: ',  this.formaPagoForm.get('numTarjeta1')?.value)
+        if (
+          valorPago1 <= 0 ||
+          this.formaPagoForm.get('numTarjeta1')?.value === ''
+        ) {
+          this.validFormaPago = false;
+        }
+      }
+      if (formaPago2 == 'Tarjeta Debito' || formaPago2 == 'Tarjeta Credito') {
+        if (
+          valorPago2 <= 0 ||
+          this.formaPagoForm.get('numTarjeta2')?.value <= 0
+        ) {
+          this.validFormaPago = false;
+        }
+      }
+    }
+
+    if (this.validFormaPago) {
+      this.modalInstance?.hide();
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+      this.toastService.showToast(
+        'Forma de Pago Guardada',
+        'Se ha guarda las formas de pago correctamente!',
+        'success',
+        3300
+      );
     } else {
-      this.alerts.mostrarMensajeError('Error el form es invalid')
+      this.toastService.showToast(
+        'El formulario hhh es inválido',
+        ' Por favor, completa todos los campos.',
+        'warning',
+        3500
+      );
     }
   }
 
-  closeModal() {
-    this.modalInstance.hide();
+  cancelSubmitPayment() {
+    this.formaPagoForm.reset();
   }
 }

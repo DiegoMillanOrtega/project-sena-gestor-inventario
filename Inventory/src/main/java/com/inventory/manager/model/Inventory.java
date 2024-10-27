@@ -1,5 +1,6 @@
 package com.inventory.manager.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,4 +20,8 @@ public class Inventory {
 
     private Long price;
     private Integer stock;
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<PedidoDetalle> pedidoDetalles;
 }

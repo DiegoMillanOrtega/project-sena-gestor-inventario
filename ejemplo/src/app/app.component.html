@@ -1,13 +1,15 @@
 <div class="contenedor">
-  <header>
-    @if (_loginService.isAuthenticated()) {
-    <p>{{ _settingService.obtainedUserSetting()?.nameSystem }}</p>
-    @if (_settingService.getLogoSrc()) {
-      <img [src]="_settingService.getLogoSrc()" alt="" />
-    }
-    } @else {
-    <p>Gestión y Control</p>
-    }
+  <header >
+    <div class="d-flex align-items-center px-4 fw-bold">
+      @if (_loginService.isAuthenticated()) {
+        <p class="m-0">{{ _settingService.obtainedUserSetting()?.nameSystem }}</p>
+        @if (_settingService.getLogoSrc()) {
+          <img [src]="_settingService.getLogoSrc()" alt="" />
+        }
+        } @else {
+        <p class="m-0">Gestión y Control {{'- ' + paginaActual}}</p>
+        }
+    </div>
   </header>
 
   @if (_loginService.isAuthenticated()) {
@@ -15,6 +17,6 @@
   } @else {
     <app-dashboard />
   }
-  <footer></footer>
+  <footer class=""></footer>
 </div>
 <app-toast></app-toast>

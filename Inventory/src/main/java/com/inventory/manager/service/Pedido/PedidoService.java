@@ -1,20 +1,15 @@
 package com.inventory.manager.service.Pedido;
 
 import com.inventory.manager.ExcepcionesPersonalizadas.DataBaseException;
-import com.inventory.manager.controller.Pedido.PedidoController;
-import com.inventory.manager.model.Client;
-import com.inventory.manager.model.Inventory;
-import com.inventory.manager.model.Pedido;
-import com.inventory.manager.model.PedidoDetalle;
+import com.inventory.manager.model.*;
 import com.inventory.manager.repository.*;
 import com.inventory.manager.service.Inventory.InventoryService;
-import jakarta.transaction.Transactional;
+import com.inventory.manager.service.PedidoDetalle.PedidoDetalleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,20 +20,13 @@ public class PedidoService implements IPedidoService{
     @Autowired
     private IPedidoRepository pedidoRepository;
     @Autowired
-    private IPedidoDetalleRepository pedidoDetalleRepository;
-
+    private PedidoDetalleService detalleService;
     @Autowired
-    private IInventoryRepository inventoryRepository;
-
-    @Autowired
-    private IClienteRepository clienteRepository;
-
-    @Autowired
-    private ICategoryRepository categoryRepository;
+    private InventoryService inventoryService;
 
     @Override
-    public List<Pedido> findAllPedido() {
-        return this.pedidoRepository.findAll();
+    public List<PedidoDTO> findAllPedido() {
+        return this.pedidoRepository.findAllPedidoDetails();
     }
 
     @Override
@@ -47,6 +35,16 @@ public class PedidoService implements IPedidoService{
             throw new IllegalArgumentException("La entidad Pedido no puede ser nula.");
         }
         try {
+            for (PedidoDetalle detalle: pedido.getPedidoDetalles()) {
+
+                detalle.setPedido(pedido);
+                detalle.setCantidades(detalle.getProducto().getStock());
+
+                Inventory producto = detalle.getProducto();
+                producto.setStock(producto.getStock() - detalle.getCantidades());
+
+                inventoryService.saveProduct(producto);
+            }
             return pedidoRepository.save(pedido);
         } catch (Exception e) {
             throw new DataBaseException("Error al guarda el pedido", e);

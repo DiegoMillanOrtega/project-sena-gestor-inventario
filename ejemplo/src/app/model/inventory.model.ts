@@ -6,5 +6,6 @@ export interface Inventory {
     category: Category;
     price: number | string;
     stock:    number;
-    selected?: boolean;
+    cantVender?: number;
+    selected?: boolean
 }
