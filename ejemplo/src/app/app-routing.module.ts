@@ -12,20 +12,22 @@ import { ListPedidosComponent } from './dashboard/pages/inventory/pedidos/list-p
 import { ClientComponent } from './dashboard/pages/client/client.component';
 import { AddClientComponent } from './dashboard/pages/client/add-client/add-client.component';
 import { DetailsClientComponent } from './dashboard/pages/client/details-client/details-client.component';
+import { DataTableComponent } from './data-table/data-table.component';
 
 const routes: Routes = [
-  { path: '', component: ContainerItemsComponent},
-  { path: 'setting', component: SettingComponent},
-  { path: 'inventory', component: InventoryComponent},
-  { path: 'inventory/addProduct', component: AddProductComponent},
-  { path: 'inventory/details/:productId/:product', component: DetailsProductsComponent},
-  { path: 'inventory/pedido/:productId/:product', component: PedidosComponent},
-  { path: 'category', component: CategoryComponent},
-  { path: 'category/newCategory', component: AddCategoryComponent},
-  { path: 'inventory/listPedidos', component: ListPedidosComponent},
-  { path: 'client', component: ClientComponent},
-  { path: 'client/addClient', component: AddClientComponent},
-  { path: 'client/details/:id/:client', component: DetailsClientComponent},
+  { path: '', component: ContainerItemsComponent, data: {title: 'Inicio'}},
+  { path: 'setting', component: SettingComponent, data: {title: 'Configuraciones'}},
+  { path: 'inventory', component: InventoryComponent, data: {title: 'Inventario'}},
+  { path: 'inventory/addProduct', component: AddProductComponent, data: {title: 'Añadir Producto'}},
+  { path: 'inventory/details/:productId/:product', component: DetailsProductsComponent, data: {title: 'Detalle Producto'}},
+  { path: 'inventory/pedido/:productId/:product', component: PedidosComponent, data: {title: 'Pedido'}},
+  { path: 'category', component: CategoryComponent, data: {title: 'Categorias'}},
+  { path: 'category/newCategory', component: AddCategoryComponent, data: {title: 'Nueva Categoria'}},
+  { path: 'inventory/listPedidos', component: ListPedidosComponent, data: {title: 'Lista de Pedidos'}},
+  { path: 'inventory/listPedidos/pedido', component: PedidosComponent, data: {title: 'Pedido'}},
+  { path: 'client', component: ClientComponent, data: {title: 'Clientes'}},
+  { path: 'client/addClient', component: AddClientComponent, data: {title: 'Añadir Cliente'}},
+  { path: 'client/details/:id/:client', component: DetailsClientComponent, data: {title: 'Detalle Cliente'}},
 ];
 
 @NgModule({

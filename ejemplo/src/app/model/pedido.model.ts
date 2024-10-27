@@ -8,5 +8,5 @@ export interface Pedido {
     address: string;
     client: Client; // Enviar solo el ID del cliente
     paymentType: FormaPago;
-    pedidoDetalles?: PedidoDetalle[];
+    pedidoDetalles: PedidoDetalle[];
 }

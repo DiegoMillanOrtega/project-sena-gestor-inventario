@@ -1,0 +1,67 @@
+<table [class]="tableStyle" style="max-height: 25vh ;overflow-y: auto;">
+    <thead>
+      <tr>
+        @for (column of columns; track $index) {
+            <th>{{ column.title | titlecase}}</th>
+        }
+        <th>Opciones</th>
+      </tr>
+    </thead>
+    <tbody>
+        @for (item of data; track $index) {
+            <tr [attr.data.id]="item[keyId]">
+                @for (column of columns; track $index) {
+                    @if (column.key === 'category' && isObject(item[column.key])) {
+                        <td> {{ item[column.key].category }}</td>
+                    } @else {
+                        <td>{{ item[column.key] }}</td>
+                    }
+                }
+                <td class="d-flex column-gap-2">
+                    @for (btn of buttons; track $index) {
+                        <button class="btn {{btn.class}}" (click)="onButtonClick(btn.id, item)" [innerHTML]="btn.icon"></button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!-- Modal Bootstrap dinámico -->
+<div class="modal fade" #modalElement tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">{{ modalTitle }}</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formGroup">
+                    @for (field of formStructure; track $index) {
+                        @for (item of dataFormGroup; track $index) {
+                            <div class="mb-3">
+                                <label [for]="field.name" class="form-label">{{ field.label }}</label>
+                                <input 
+                                  [type]="field.type" 
+                                  class="form-control" 
+                                  [formControlName]="field.name" 
+                                  [id]="field.name" 
+                                  [value]="item[field.name]">
+                            </div>
+                        }
+                    }
+                </form>
+                <!-- Contenido dinámico será insertado aquí -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary" (click)="updateProduct()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

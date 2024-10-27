@@ -18,6 +18,7 @@ public class PedidoDetalle {
     private Pedido pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "id_inventory", nullable = false)
     private Inventory producto;
 

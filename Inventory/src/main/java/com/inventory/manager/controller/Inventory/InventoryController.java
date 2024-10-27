@@ -1,6 +1,7 @@
 package com.inventory.manager.controller.Inventory;
 
 import com.inventory.manager.model.Inventory;
+import com.inventory.manager.model.InventoryDTO;
 import com.inventory.manager.repository.IInventoryRepository;
 import com.inventory.manager.service.Inventory.InventoryService;
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ public class InventoryController {
     public final static Logger logger = LoggerFactory.getLogger(InventoryController.class);
 
     @GetMapping("/getInventory")
-    public List<Inventory> inventoryList() {
+    public List<InventoryDTO> inventoryList() {
         return this.inventoryService.inventoryList();
     }
 
@@ -49,10 +50,44 @@ public class InventoryController {
         return inventoryService.buscarProductosPorNombre(product);
     }
 
+    @GetMapping("/searchOutOfStock/{product}")
+    public ResponseEntity<List<Inventory>> searchProductByNameOutOfStock(@PathVariable String product) {
+        try {
+            logger.info("Producto recibido: " + product);  // Verificar el valor recibido
+            List<Inventory> result = inventoryService.buscarProductosPorNombreSinStock(product);
+            logger.info("Resultados encontrados: " + result.size());  // Verificar si se encontraron resultados
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error al buscar producto", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @GetMapping("/searchCategory/{category}")
     public ResponseEntity<List<Inventory>> searchProductByCategory(@PathVariable String category) {
        List<Inventory> products = this.inventoryService.findByProductsByCategory(category);
        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/getOutOfStockProducts")
+    public ResponseEntity<List<Inventory>> findOutOfStockProducts() {
+        try {
+            return new ResponseEntity<>(inventoryService.findOutOfStockProducts(),HttpStatus.OK);
+        } catch (Exception e) {
+            logger.info("Error al obtener los productos sin Stock: " + e.getMessage() + e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getByProductsByCategoryOutOfStock/{category}")
+    public ResponseEntity<List<Inventory>> findByProductsByCategoryOutOfStock(@PathVariable String category) {
+        try {
+            return new ResponseEntity<>(inventoryService.findByProductsByCategoryOutOfStock(category),HttpStatus.OK);
+        } catch (Exception e) {
+            logger.info("Error al obtener los productos sin Stock: " + e.getMessage() + e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/postProduct")

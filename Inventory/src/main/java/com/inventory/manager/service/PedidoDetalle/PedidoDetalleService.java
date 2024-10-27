@@ -13,13 +13,12 @@ public class PedidoDetalleService implements IPedidoDetalleService{
     @Autowired
     private IPedidoDetalleRepository pedidoDetalleRepository;
     @Override
-    public PedidoDetalle savePedidoDetalle(PedidoDetalle pedidoDetalle) {
+    public void savePedidoDetalle(PedidoDetalle pedidoDetalle) {
         if (pedidoDetalle == null) {
             throw new IllegalArgumentException("La entidad pedidoDetalle no puede ser nula.");
         }
-
         try {
-            return pedidoDetalleRepository.save(pedidoDetalle);
+            pedidoDetalleRepository.save(pedidoDetalle);
         } catch (Exception e) {
             throw new DataBaseException("Error al guarda el detalle del pedido", e);
         }

@@ -1,21 +1,24 @@
 <header>Lista de clientes</header>
-<div class="container mb-4 mt-3">
+<div>
   <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
       <div class="d-flex" role="search">
-        <input
-          class="form-control me-2"
+        <div class="input-group">
+          <input
+          class="form-control "
           type="search"
           placeholder="Buscar por nombre"
           aria-label="Search"
-          [(ngModel)]="findClient"
-          (keydown.enter)="buscarProductos()"
-        />
-     
-        <button class="btn btn-outline-success w-50" type="submit" (click)="buscarProductos()">
-          <app-icons-svg [nombreIcono]="'search'" /> Search
-        </button>
+          />
+          <button
+          class="btn btn-outline-success"
+          type="submit"
 
+        >
+          <app-icons-svg [nombreIcono]="'search'" />
+        </button>
+        </div>
+        
         <button type="button" class="btn btn-primary" routerLink="addClient">
           <app-icons-svg [nombreIcono]="'add'" />
         </button>

@@ -65,6 +65,7 @@ export class AlertsService {
     items: any[],
     titleTable: string,
     columns: { key: string; title: string }[],
+    keyId: string,
     removeItemCallback?: (index: number) => void,
     actionButtons?: {
       label: string;
@@ -128,7 +129,8 @@ export class AlertsService {
 
       const pageItems = getPageItems(page);
       pageItems.forEach((item, index) => {
-        tableHtml += `<tr data-id="${item.id}">`;
+        const id = keyId;
+        tableHtml += `<tr data-id="${item[id]}">`;
         columns.forEach((column) => {
           if (column.key === 'category' && typeof item[column.key] === 'object') {
              tableHtml += `<td>${item[column.key].category}</td>`;

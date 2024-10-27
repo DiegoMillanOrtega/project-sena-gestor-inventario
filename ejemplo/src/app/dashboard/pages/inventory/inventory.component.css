@@ -27,3 +27,20 @@ table {
     gap: 5px;
     height: 100%;
 }
+.th:hover {
+    background-color: #f5f5f5; /* Cambia el color de fondo al pasar el mouse */
+    cursor: pointer; /* Cambia el cursor a pointer */
+  }
+
+  .container-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* O el tamaño que quieras para el contenedor padre */
+  }
+  
+  /* Estilos del div interno */
+  .responsive-div {
+    flex-grow: 1; /* Para que crezca y aproveche el espacio disponible */
+    max-height: 410px; /* La altura máxima que quieras */
+    overflow-y: auto; /* Activa el scroll si el contenido excede la altura */
+  }

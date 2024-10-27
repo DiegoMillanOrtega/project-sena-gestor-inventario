@@ -2,8 +2,11 @@ package com.inventory.manager.controller.Pedido;
 
 import com.inventory.manager.controller.UsersController;
 import com.inventory.manager.model.*;
+import com.inventory.manager.model.modelRequest.PedidoDetalleRequest;
+import com.inventory.manager.model.modelRequest.PedidoRequest;
 import com.inventory.manager.repository.IClienteRepository;
 import com.inventory.manager.service.Pedido.PedidoService;
+import com.inventory.manager.service.Pedido.PedidoTransaccionalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +27,11 @@ public class PedidoController {
 
     @Autowired
     private IClienteRepository clienteRepository;
+    @Autowired
+    private PedidoTransaccionalService pedidoTransaccionalService;
 
-    @GetMapping("/getPedidos")
-    public List<Pedido> pedidoList() {
+        @GetMapping("/getPedidos")
+    public List<PedidoDTO> pedidoList() {
         logger.info("Return pedidoList");
         return this.pedidoService.findAllPedido();
     }

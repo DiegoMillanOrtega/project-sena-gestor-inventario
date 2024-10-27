@@ -14,27 +14,38 @@
           <app-icons-svg [nombreIcono]="'addOrder'" />
         </button>
 
-        <button class="btn btn-info colorFont" (click)="showSelectedProducts()">
+        <button class="btn btn-info" (click)="showSelectedProducts()">
           <app-icons-svg [nombreIcono]="'table'" />
         </button>
 
         <button class="btn btn-info" (click)="showClients()">
           <app-icons-svg [nombreIcono]="'person'" />
         </button>
+        <button
+          class="btn btn-success"
+          data-bs-toggle="modal"
+          data-bs-target="#paymentModal"
+          (click)="showModalFormasDePago()"
+        >
+          <i class="bi bi-wallet2"></i>
+        </button>
+        <button class="btn btn-success" routerLink="/inventory/listPedidos/pedido">
+          <i class="bi bi-plus"></i>
+        </button>
       </div>
     </div>
   </nav>
 </div>
-
+<!-- 
 <div>
-  <form [formGroup]="labelCliente">
+  <form [formGroup]="labelCliente" class="form-master">
     <div class="row">
       <div class="col-md-6">
         <div class="form-floating">
           <input
             type="text"
             class="form-control"
-            [ngClass]="{ 'is-valid': labelCliente.get('stock')?.valid }"
+            [ngClass]="{ 'is-valid': labelCliente.get('product')?.valid }"
             id="product"
             formControlName="product"
           />
@@ -47,7 +58,7 @@
           <input
             type="number"
             class="form-control"
-            [ngClass]="{ 'is-valid': labelCliente.get('stock')?.valid }"
+            [ngClass]="{ 'is-valid': labelCliente.get('price')?.valid }"
             id="price"
             formControlName="price"
           />
@@ -67,9 +78,9 @@
               'is-valid': labelCliente.get('stock')?.valid
             }"
             id="stock"
-            (keydown.Enter)="actualizarProducto()"
             required
             formControlName="stock"
+            (blur)="actualizarProducto()"
           />
           <label for="stock">Cantidad a Vender:</label>
 
@@ -106,20 +117,25 @@
             type="text"
             class="form-control"
             [ngClass]="{
-              'is-valid': clienteEncontrado,
-              
-              }"
+              'is-valid':
+                labelCliente.get('client')?.valid &&
+                (labelCliente.get('client')?.touched ||
+                  labelCliente.get('client')?.dirty),
+              'is-invalid':
+                labelCliente.get('client')?.invalid &&
+                (labelCliente.get('client')?.touched ||
+                  labelCliente.get('client')?.dirty)
+            }"
             id="client"
             required
             formControlName="client"
-            (keydown.enter)="buscarCliente()"
           />
           <label for="client">Cliente:</label>
         </div>
       </div>
 
-      <div class="col-md-6">
-        <select
+      <div class="col-md-6"> -->
+        <!-- <select
           class="form-select"
           id="paymentType"
           [ngClass]="{ 'is-valid': labelCliente.get('paymentType')?.value }"
@@ -138,10 +154,10 @@
         @if (this.labelCliente.get('paymentType')?.invalid &&
         this.labelCliente.get('paymentType')?.touched) {
         <div class="text-danger">Debe seleccionar una forma de pago.</div>
-        }
-      </div>
+        } -->
+      <!-- </div>
 
-      <div class="row">
+      <div class="row"> -->
         <!-- <div class="col-md-6">
           <div class="form-floating">
             @if (productoAgregadoToForm) {
@@ -160,19 +176,341 @@
             }
           </div>
         </div> -->
-      </div>
+      <!-- </div>
     </div>
 
     <button
       class="btn btn-success mt-1"
-      (click)="sendPedido()"
+      data-bs-toggle="modal"
+      data-bs-target="#productosModal"
       [disabled]="
-        labelCliente.invalid ||
-        (stockModificado &&
-          labelCliente.get('stock')?.hasError('stockExceeded'))
+        stockModificado && labelCliente.get('stock')?.hasError('stockExceeded')
       "
     >
       Confirmar pedido
     </button>
   </form>
+</div> -->
+
+
+<div class="container-xl p-0" style="max-height: 410px; overflow-y: auto">
+  <table class="table table-striped table-hover table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Address</th>
+        <th scope="col">Price</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Forma de Pago</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (pedido of pedidoList; track $index) {
+        <tr>
+          <th scope="row">{{ pedido.id }}</th>
+          <td>{{ pedido.address }}</td>
+          <td>{{ pedido.price }}</td>
+          <td>{{ pedido.name + ' ' + pedido.lastName }}</td>
+          <td>{{ pedido.descrip }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="productosModal"
+  tabindex="-1"
+  aria-labelledby="productosModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="productosModalLabel">
+          Productos en el Pedido
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="container mt-4">
+          <!-- Información del Cliente -->
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              Información del Pedido
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h5 class="card-title">Datos del Cliente</h5>
+                  <p class="card-text">
+                    <strong>Nombre:</strong> {{ clienteSeleccionado?.name }}
+                    {{ clienteSeleccionado?.lastName }}
+                  </p>
+                  <p class="card-text">
+                    <strong>Correo:</strong> {{ clienteSeleccionado?.email }}
+                  </p>
+                  <p class="card-text">
+                    <strong>Teléfono:</strong>
+                    {{ clienteSeleccionado?.phoneNumber }}
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <h5 class="card-title">Datos del Pedido</h5>
+                  <p class="card-text">
+                    <strong>Número de Pedido:</strong> 000123
+                  </p>
+                  <p class="card-text">
+                    <strong>Fecha:</strong> {{ fechaActual }}
+                  </p>
+                  <p class="card-text"><strong>Estado:</strong> Pendiente</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Productos Seleccionados -->
+          <div class="card mt-4">
+            <div class="card-header bg-success text-white">
+              Productos en el Pedido
+            </div>
+            <div class="card-body">
+              <div class="table-responsive overflow-y-auto">
+                <table class="table table-bordered table-hover">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio Unitario</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (producto of selectedProducts; track $index) {
+                    <tr>
+                      <td>{{ producto.product }}</td>
+                      <td>{{ producto.stock }}</td>
+                      <td>{{ producto.price }}</td>
+                      <td>{{ producto.price }}</td>
+                    </tr>
+                    }
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th colspan="3" class="text-right">Descuento:</th>
+                      <th>{{ getValorFormaPago() | currency }}</th>
+                    </tr>
+                    <tr>
+                      <th colspan="3" class="text-right">Total:</th>
+                      <th>{{ getTotal() | currency }}</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-success mr-2"
+            (click)="sendPedido()"
+            data-bs-dismiss="modal"
+          >
+            Aprobar Pedido
+          </button>
+          <button class="btn btn-danger" data-bs-dismiss="modal">
+            Cancelar Pedido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="paymentModal"
+  tabindex="-1"
+  aria-labelledby="paymentModalLabel"
+  aria-hidden="true"
+  #modal
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentModalLabel">
+          Selecciona formas de pago
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formaPagoForm">
+          <!-- Forma de Pago 1 y Cantidad -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select
+                  class="form-select"
+                  formControlName="formaPago1"
+                  id="paymentMethod1"
+                  aria-label="Selecciona una forma de pago"
+                >
+                  <option value="" disabled selected>
+                    Selecciona una opción
+                  </option>
+                  @for (formaPago of formasDePago; track $index) {
+                  <option value="{{ formaPago.descrip }}">
+                    {{ formaPago.descrip }}
+                  </option>
+                  }
+                </select>
+                <label for="paymentMethod1" class="form-label"
+                  >Forma de pago 1</label
+                >
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="valorPago1"
+                  id="paymentAmount1"
+                  placeholder="Cantidad"
+                  [ngClass]="{'is-invalid': formaPagoForm.get('valorPago1')?.invalid}"
+                />
+                <label for="paymentAmount1" class="form-label">Cantidad</label>
+                <div id="validationServerUsernameFeedback" class="invalid-feedback">
+                  El valor no puede ser menor a 0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Número de tarjeta 1 (si se selecciona tarjeta) -->
+          <div
+            class="form-floating mb-3"
+            [ngClass]="{
+              'd-none':
+                formaPagoForm.get('formaPago1')?.value !== 'Tarjeta Credito' &&
+                formaPagoForm.get('formaPago1')?.value !== 'Tarjeta Debito'
+            }"
+          >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numTarjeta1"
+              id="cardNumber1"
+              placeholder="Número de tarjeta"
+            />
+            <label for="cardNumber1" class="form-label"
+              >Número de tarjeta 1</label
+            >
+          </div>
+
+          <!-- Forma de Pago 2 y Cantidad -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select
+                  class="form-select"
+                  formControlName="formaPago2"
+                  id="paymentMethod2"
+                  aria-label="Selecciona una forma de pago"
+                >
+                  <option value="" disabled selected>
+                    Selecciona una opción
+                  </option>
+                  @for (formaPago of formasDePago; track $index) {
+                  <option value="{{ formaPago.descrip }}">
+                    {{ formaPago.descrip }}
+                  </option>
+                  }
+                </select>
+                <label for="paymentMethod2" class="form-label"
+                  >Forma de pago 2</label
+                >
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="valorPago2"
+                  id="paymentAmount2"
+                  placeholder="Cantidad"
+                  [ngClass]="{'is-invalid': formaPagoForm.get('valorPago2')?.invalid}"
+                />
+                <label for="paymentAmount2" class="form-label">Cantidad</label>
+                <div id="validationServerUsernameFeedback" class="invalid-feedback">
+                  El valor no puede ser menor a 0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Número de tarjeta 2 (si se selecciona tarjeta) -->
+          <div
+            class="form-floating mb-3"
+            [ngClass]="{
+              'd-none':
+              formaPagoForm.get('formaPago2')?.value !== 'Tarjeta Credito' &&
+              formaPagoForm.get('formaPago2')?.value !== 'Tarjeta Debito'
+            }"
+          >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numTarjeta2"
+              id="cardNumber2"
+              placeholder="Número de tarjeta"
+            />
+            <label for="cardNumber2" class="form-label"
+              >Número de tarjeta 2</label
+            >
+          </div>
+
+          <!-- Descuento -->
+          <div class="form-floating mb-3">
+            <input
+              type="number"
+              class="form-control"
+              formControlName="descuento"
+              id="discount"
+              placeholder="Ingresa el descuento"
+              [ngClass]="{'is-invalid': formaPagoForm.get('descuento')?.invalid}"
+            />
+            <label for="discount" class="form-label">Descuento (%)</label>
+            <div id="validationServerUsernameFeedback" class="invalid-feedback">
+              El descuento no puede ser menor a 0 ni mayor a 100.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancelSubmitPayment()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="formaPagoForm.invalid" (click)="submitPayment()">
+          Guardar pago
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

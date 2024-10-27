@@ -7,7 +7,7 @@ import { SettingComponent } from './dashboard/pages/setting/setting.component';
 import { LoginComponent } from './dashboard/pages/login/login.component';
 import { InventoryComponent } from './dashboard/pages/inventory/inventory.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { ContainerItemsComponent } from './dashboard/pages/container-items/container-items.component';
 import { AddProductComponent } from './dashboard/pages/inventory/add-product/add-product.component';
@@ -21,6 +21,8 @@ import { ClientComponent } from './dashboard/pages/client/client.component';
 import { AddClientComponent } from './dashboard/pages/client/add-client/add-client.component';
 import { DetailsClientComponent } from './dashboard/pages/client/details-client/details-client.component';
 import { ToastComponent } from './toast/toast.component';
+import { HeaderComponent } from './header/header.component';
+import { DataTableComponent } from './data-table/data-table.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { ToastComponent } from './toast/toast.component';
     AddClientComponent,
     DetailsClientComponent,
     ToastComponent,
+    HeaderComponent,
+    DataTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +52,7 @@ import { ToastComponent } from './toast/toast.component';
     ReactiveFormsModule,
     CommonModule,
     FormsModule,
+    CurrencyPipe
     
   ],
   providers: [provideHttpClient()],

@@ -8,9 +8,15 @@
           class="form-control"
           id="nombre"
           formControlName="name"
+          [ngClass]="{
+            'is-valid':
+              newClient.get('name')?.valid && newClient.get('name')?.touched,
+            'is-invalid':
+              newClient.get('name')?.invalid && newClient.get('name')?.touched
+          }"
         />
         <label for="nombre">Nombre del cliente:</label>
-        <div class="invalid-feedback">Nombre es requerido</div>
+        @if (newClient.get('name')?.invalid && newClient.get('name')?.touched) {<div class="invalid-feedback">El Nombre es Requerido</div>}        
       </div>
     </div>
     <div class="col-md-6">
@@ -20,9 +26,15 @@
           class="form-control"
           id="apellido"
           formControlName="lastName"
+          [ngClass]="{
+            'is-valid':
+              newClient.get('lastName')?.valid && newClient.get('lastName')?.touched,
+            'is-invalid':
+              newClient.get('lastName')?.invalid && newClient.get('lastName')?.touched
+          }"
         />
         <label for="apellido">Apellido:</label>
-        <div class="invalid-feedback">Apellido es requerido</div>
+        @if (newClient.get('name')?.invalid && newClient.get('name')?.touched) {<div class="invalid-feedback">Apellido es requerido</div>}
       </div>
     </div>
   </div>
@@ -45,10 +57,14 @@
           type="email"
           class="form-control"
           id="email"
+          [ngClass]="{
+            'is-valid': newClient.get('email')?.valid && newClient.get('email')?.dirty && newClient.get('email')?.value,
+            'is-invalid': newClient.get('email')?.invalid && (newClient.get('email')?.dirty || newClient.get('email')?.touched)
+          }"
           formControlName="email"
         />
         <label for="email">Email:</label>
-        <div class="invalid-feedback">Email es requerido</div>
+        @if (newClient.get('email')?.invalid && (newClient.get('email')?.dirty || newClient.get('email')?.touched)) {<div class="invalid-feedback">El texto ingresado no es un correo electrónico válido.</div>}        
       </div>
     </div>
   </div>
@@ -77,5 +93,8 @@
       </div>
     </div>
   </div>
-  <button class="btn btn-success">Agregar cliente</button>
+  <button class="btn btn-success" [disabled]="newClient.invalid">
+    Agregar cliente
+  </button>
 </form>
+
