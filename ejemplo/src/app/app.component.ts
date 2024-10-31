@@ -3,6 +3,7 @@ import { LoginService } from './service/login.service';
 import { SettingService } from './service/setting.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
+import { AuthService } from './core/service/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -17,11 +18,14 @@ export class AppComponent implements OnInit{
   public _loginService = inject(LoginService);
   private route = inject(Router)
   private activatedRoute = inject(ActivatedRoute)
+  public _authService = inject(AuthService)
+
 
   
   nameSystem: string | undefined = '';
   logoSrc: string | null = null;
   paginaActual: string = '';
+  isAuthenticated: boolean = false;
 
   ngOnInit(): void {
     

@@ -1,10 +1,8 @@
 package com.inventory.manager.service;
 
-import com.inventory.manager.model.Users;
-import com.inventory.manager.repository.IUsersRepository;
+import com.inventory.manager.User.User;
+import com.inventory.manager.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,22 +11,22 @@ import java.util.List;
 public class UsersService implements IUsersService {
 
     @Autowired
-    private IUsersRepository usersRepository;
+    private IUserRepository usersRepository;
 
     @Override
-    public List<Users> usersList() {
+    public List<User> usersList() {
         return this.usersRepository.findAll();
     }
 
     @Override
-    public void addUser(Users user) {
+    public void addUser(User user) {
         this.usersRepository.save(user);
     }
 
     @Override
     public boolean authenticateUser(String username, String password) {
-        List<Users> usersList = this.usersList();
-        for (Users user : usersList) {
+        List<User> usersList = this.usersList();
+        for (User user : usersList) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return true; // Autenticación exitosa
             }

@@ -13,21 +13,27 @@ import { ClientComponent } from './dashboard/pages/client/client.component';
 import { AddClientComponent } from './dashboard/pages/client/add-client/add-client.component';
 import { DetailsClientComponent } from './dashboard/pages/client/details-client/details-client.component';
 import { DataTableComponent } from './data-table/data-table.component';
+import DashboardComponent from './dashboard/dashboard.component';
+import { AuthGuard } from './core/guards/auth.guard';
+import { LoginComponent } from './dashboard/pages/login/login.component';
+
 
 const routes: Routes = [
-  { path: '', component: ContainerItemsComponent, data: {title: 'Inicio'}},
-  { path: 'setting', component: SettingComponent, data: {title: 'Configuraciones'}},
-  { path: 'inventory', component: InventoryComponent, data: {title: 'Inventario'}},
-  { path: 'inventory/addProduct', component: AddProductComponent, data: {title: 'Añadir Producto'}},
-  { path: 'inventory/details/:productId/:product', component: DetailsProductsComponent, data: {title: 'Detalle Producto'}},
-  { path: 'inventory/pedido/:productId/:product', component: PedidosComponent, data: {title: 'Pedido'}},
-  { path: 'category', component: CategoryComponent, data: {title: 'Categorias'}},
-  { path: 'category/newCategory', component: AddCategoryComponent, data: {title: 'Nueva Categoria'}},
-  { path: 'inventory/listPedidos', component: ListPedidosComponent, data: {title: 'Lista de Pedidos'}},
-  { path: 'inventory/listPedidos/pedido', component: PedidosComponent, data: {title: 'Pedido'}},
-  { path: 'client', component: ClientComponent, data: {title: 'Clientes'}},
-  { path: 'client/addClient', component: AddClientComponent, data: {title: 'Añadir Cliente'}},
-  { path: 'client/details/:id/:client', component: DetailsClientComponent, data: {title: 'Detalle Cliente'}},
+  { path: '', component: ContainerItemsComponent, data: {title: 'Inicio'}, canActivate: [AuthGuard]},
+  { path: 'setting', component: SettingComponent, data: {title: 'Configuraciones'}, canActivate: [AuthGuard]},
+  { path: 'inventory', component: InventoryComponent, data: {title: 'Inventario'}, canActivate: [AuthGuard]},
+  { path: 'inventory/addProduct', component: AddProductComponent, data: {title: 'Añadir Producto'}, canActivate: [AuthGuard]},
+  { path: 'inventory/details/:productId/:product', component: DetailsProductsComponent, data: {title: 'Detalle Producto'}, canActivate: [AuthGuard]},
+  { path: 'inventory/pedido/:productId/:product', component: PedidosComponent, data: {title: 'Pedido'}, canActivate: [AuthGuard]},
+  { path: 'category', component: CategoryComponent, data: {title: 'Categorias'}, canActivate: [AuthGuard]},
+  { path: 'category/newCategory', component: AddCategoryComponent, data: {title: 'Nueva Categoria'}, canActivate: [AuthGuard]},
+  { path: 'inventory/listPedidos', component: ListPedidosComponent, data: {title: 'Lista de Pedidos'}, canActivate: [AuthGuard]},
+  { path: 'inventory/listPedidos/pedido', component: PedidosComponent, data: {title: 'Pedido'}, canActivate: [AuthGuard]},
+  { path: 'client', component: ClientComponent, data: {title: 'Clientes'}, canActivate: [AuthGuard]},
+  { path: 'client/addClient', component: AddClientComponent, data: {title: 'Añadir Cliente'}, canActivate: [AuthGuard]},
+  { path: 'client/details/:id/:client', component: DetailsClientComponent, data: {title: 'Detalle Cliente'}, canActivate: [AuthGuard]},
+  { path: 'dashboard', component: DashboardComponent, data: {title: 'Dashboard'}, canActivate: [AuthGuard]},
+  { path: 'login', component: LoginComponent, }
 ];
 
 @NgModule({

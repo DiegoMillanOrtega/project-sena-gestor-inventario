@@ -1,4 +1,4 @@
-<form [formGroup]="user" (ngSubmit)="onSubmit()">             
+<form [formGroup]="user">             
     <div>
         <img src="assets/imagenes/sena-colombia-logo.svg" alt="">
         <p>Usuario</p>
@@ -20,7 +20,8 @@
         <div class="invalid-feedback">Contraseña requerida</div>
     }
 
-    <button id="btn">Iniciar Sesión</button>      
+    <button id="btn" (click)="login()">Iniciar Sesión</button>      
 </form>
+
 
 
