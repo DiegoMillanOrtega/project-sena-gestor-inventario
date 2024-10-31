@@ -1,6 +1,6 @@
 package com.inventory.manager.controller;
 
-import com.inventory.manager.model.Users;
+import com.inventory.manager.User.User;
 import com.inventory.manager.service.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +22,15 @@ public class UsersController {
     public static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 
     @GetMapping("/getUsers")
-    public List<Users> getUsers() {
-        List<Users> users = this.usersService.usersList();
+    public List<User> getUsers() {
+        List<User> users = this.usersService.usersList();
         logger.info("Users obtained");
         users.forEach(user -> logger.info(user.toString()));
         return users;
     }
 
     @PostMapping("/postUsers")
-    public ResponseEntity<String> login(@RequestBody Users user) {
+    public ResponseEntity<String> login(@RequestBody User user) {
         if (usersService.authenticateUser(user.getUsername(), user.getPassword())) {
             return ResponseEntity.ok("Autenticacion exitosa");
         } else {

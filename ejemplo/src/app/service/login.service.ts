@@ -9,16 +9,14 @@ import { Users } from '../model/user.model';
 export class LoginService {
 
   private isAuthenticatedUser: boolean = false;
-  private apiUrl: string = "http://localhost:8080/users";
+  private apiUrl: string = "http://localhost:8080/auth";
   private _http = inject(HttpClient);
   
-  getUsers(): Observable<Users[]> {
-    return this._http.get<Users[]>(`${this.apiUrl}/getUsers`)
-  }
+  
 
   login(username: string, password: string): Observable<any> {
     const body = {username, password};
-    return this._http.post(`${this.apiUrl}/postUsers`, body, { responseType: 'text' }).pipe(
+    return this._http.post(`${this.apiUrl}/login`, body, { responseType: 'text' }).pipe(
       map((response: any) => {
         // Autenticación exitosa
         this.isAuthenticatedUser = true;

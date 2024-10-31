@@ -8,7 +8,7 @@ import { UserSetting } from '../model/userSetting.model';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit{
+export default class DashboardComponent implements OnInit{
   
   private _settingService = inject(SettingService);
   

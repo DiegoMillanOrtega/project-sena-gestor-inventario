@@ -11,12 +11,11 @@
         }
     </div>
   </header>
-
-  @if (_loginService.isAuthenticated()) {
-    <app-login />
+  @if (_authService.isAuthenticated()) {
+    <app-dashboard/>
   } @else {
-    <app-dashboard />
+    <app-login/>
   }
-  <footer class=""></footer>
+  <footer></footer>
 </div>
 <app-toast></app-toast>
