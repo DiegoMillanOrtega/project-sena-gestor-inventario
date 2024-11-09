@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent{
+export class LoginComponent implements OnInit {
 
   
   private _loginService = inject(LoginService);
@@ -26,6 +26,10 @@ export class LoginComponent{
       username: ['', Validators.required],
       password: ['', Validators.required]
     })
+  }
+
+  ngOnInit(): void {
+    this._authService.logout();
   }
 
   login() {
