@@ -1,63 +1,98 @@
+a {
+  color: black;
+  text-decoration: none;
+}
+nav a {
+  display: flex;
+  gap: 8px;
+  
+  border-radius: 10px;
+}
+nav a:hover {
+    cursor: pointer;
+    background-color: #eef1f2;
+    color: black;
+
+}
 
 li {
-    list-style-type: none;
+  list-style-type: none;
 }
 .centro {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 50%;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 50%;
 }
-    .right {
-        position: absolute;
-        width: 80vw;
-        height: 88vh;
-        right: 0;
-        
-    }
-    .menu {
-        display: flex;
-        height: 88vh;
-        width: 20vw;  
-        border-right: 2px solid black;
-        z-index: 1;
-    }
-    .menu menu {
-        width: 100%;
-        height: 188.8px;
-        padding: 0;
-        margin: 0px;
-    }
-    .menu button {
-        width: 100%;
-        padding: 10px 0;
-        transition: background-color .2s ease-in-out,
-                    font-weight .2s ease-in-out;
-        border-left-style: none;
-        border-right-style: none;
-    }
-    .menu button:hover{
-        cursor: pointer;
-        background-color: grey;
-        font-weight: bold;
-    }
+.right {
+  position: absolute;
+  width: 80vw;
+  height: 88vh;
+  right: 0;
+}
+.menu {
+  display: flex;
+  height: 88vh;
+  width: 20vw;
+  border-right: 2px solid black;
+  z-index: 1;
+}
+.menu menu {
+  width: 100%;
+  height: 188.8px;
+  padding: 0;
+  margin: 0px;
+}
+.menu button {
+  width: 100%;
+  padding: 10px 0;
+  transition: background-color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+  border-left-style: none;
+  border-right-style: none;
+}
+.menu button:hover {
+  cursor: pointer;
+  background-color: grey;
+  font-weight: bold;
+}
 
 .imagen {
-    width: 200px;
-    height: 100px;
+  width: 200px;
+  height: 100px;
 }
 
 .active {
-    background-color: grey;
-    font-weight: bold;
+  background-color: grey;
+  font-weight: bold;
 }
-    /* display: flex;
+/* display: flex;
     align-items: flex-start;
     justify-content: center;
     height: 180%;
     width: 70%;     */
-    
+
+.nav-tabs .nav-link {
+  color: #6c757d; /* Color de texto gris */
+  font-weight: bold;
+  border: 1px solid transparent; /* Borde transparente */
+  border-radius: 0.25rem;
+  margin-right: 0.25rem; /* Espacio entre botones */
+}
+.nav-tabs .nav-link.active {
+  color: #000; /* Color de texto negro para la pestaña activa */
+  background-color: #fff; /* Fondo blanco para la pestaña activa */
+  border-color: #dee2e6 #dee2e6 #fff; /* Borde específico para simular el botón activo */
+}
+
+#sidebar{
+  /* position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 1030; */
+  width: 18dvw;
+}

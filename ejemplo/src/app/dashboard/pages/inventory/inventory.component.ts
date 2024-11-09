@@ -72,10 +72,10 @@ export class InventoryComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // Modal de editar productos
-    document.body.appendChild(this.editProductoModal.nativeElement);
-    this.editProductoModalBootstrap = new Modal(
-      this.editProductoModal.nativeElement
-    );
+    // document.body.appendChild(this.editProductoModal.nativeElement);
+    // this.editProductoModalBootstrap = new Modal(
+    //   this.editProductoModal.nativeElement
+    // );
   }
 
   ngOnInit(): void {
@@ -197,6 +197,8 @@ export class InventoryComponent implements OnInit, AfterViewInit {
   }
 
   buscarProductosByCategory(category: Category) {
+    console.log('holaa');
+    
     this.loading = true;
     if (this.mostrarProductosSinStock != true) {
       this._inventoryService.searchByCategory(category.category).subscribe({

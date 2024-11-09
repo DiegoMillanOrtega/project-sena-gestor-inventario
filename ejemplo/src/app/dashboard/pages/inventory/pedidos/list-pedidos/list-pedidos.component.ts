@@ -35,7 +35,6 @@ import Swal from 'sweetalert2';
 import * as bootstrap from 'bootstrap';
 import { AppComponent } from '../../../../../app.component';
 import { Modal } from 'bootstrap';
-import { format } from 'date-fns';
 import {
   catchError,
   debounceTime,
@@ -129,7 +128,6 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       paymentType: ['', Validators.required],
       client: ['', Validators.required, this.buscarCliente.bind(this)],
     });
-    this.fechaActual = format(new Date(), 'dd-MM-yyyy');
 
     this.formaPagoForm = form.group({
       formaPago1: [''],
@@ -144,7 +142,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.labelCliente.get('stock')?.valueChanges.subscribe((value) => {
+    this.labelCliente.get('stock')?.valueChanges.subscribe(() => {
       if (this.stockModificado !== true) {
         this.stockModificado = true;
         this.labelCliente.get('stock')?.updateValueAndValidity();

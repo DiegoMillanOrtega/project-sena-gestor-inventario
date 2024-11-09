@@ -1,21 +1,9 @@
 <div class="contenedor">
-  <header >
-    <div class="d-flex align-items-center px-4 fw-bold">
-      @if (_loginService.isAuthenticated()) {
-        <p class="m-0">{{ _settingService.obtainedUserSetting()?.nameSystem }}</p>
-        @if (_settingService.getLogoSrc()) {
-          <img [src]="_settingService.getLogoSrc()" alt="" />
-        }
-        } @else {
-        <p class="m-0">Gestión y Control {{'- ' + paginaActual}}</p>
-        }
-    </div>
-  </header>
+  
   @if (_authService.isAuthenticated()) {
     <app-dashboard/>
   } @else {
     <app-login/>
   }
-  <footer></footer>
 </div>
 <app-toast></app-toast>
