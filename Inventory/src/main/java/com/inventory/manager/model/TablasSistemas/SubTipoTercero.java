@@ -22,4 +22,6 @@ public class SubTipoTercero {
     @ManyToOne
     @JoinColumn(name = "tipoTerceroId", nullable = false)
     private TipoTercero tipoTercero;
+
+    private Boolean activo;
 }

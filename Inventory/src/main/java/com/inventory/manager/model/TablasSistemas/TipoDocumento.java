@@ -18,5 +18,6 @@ public class TipoDocumento {
     private Long tipoDocumentoId;
     private String codigo;
     private String descrip;
+    private Boolean activo;
 
 }

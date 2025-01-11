@@ -94,7 +94,7 @@ public class Tercero {
                     @Index(name = "idx_rol_operacion_id", columnList = "rol_operacion_id")
             }
     )
-    @JsonProperty("rolOperacion")
+    @JsonProperty("rolOperaciones")
     private List<RolOperacion> rolOperacionList;
 
     @ManyToMany

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 })
 public class Relaciones {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long relacionId;
 
     @Column(nullable = false, unique = true)
@@ -22,4 +22,6 @@ public class Relaciones {
 
     @Column(nullable = false)
     private String descripcion;
+
+    private String activo;
 }

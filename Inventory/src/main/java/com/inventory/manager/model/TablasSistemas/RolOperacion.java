@@ -19,4 +19,6 @@ public class RolOperacion {
     private Long tipoOperacionId;
     private String codigo;
     private String descrip;
+    private Boolean activo;
+
 }

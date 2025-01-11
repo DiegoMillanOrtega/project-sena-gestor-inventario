@@ -45,8 +45,7 @@ public class ClientController {
         }
         catch (DataIntegrityViolationException e) {
 
-            logger.error("Error, tercero duplicado con Tipo de documento: " + tercero.getTipoDocumento()
-                         + " y Numero de documento: " + tercero.getNumeroDocumento());
+            logger.error("Error, tercero duplicado con Tipo de documento: {} y Numero de documento: {}", tercero.getTipoDocumento(), tercero.getNumeroDocumento());
 
             HttpHeaders headers = new HttpHeaders();
 

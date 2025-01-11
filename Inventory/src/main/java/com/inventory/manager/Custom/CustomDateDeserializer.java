@@ -20,10 +20,10 @@ public class CustomDateDeserializer extends JsonDeserializer<Date> {
     public Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         String dateStr = p.getText();
         try {
-            return dateFormat1.parse(dateStr);
+            return dateFormat2.parse(dateStr);
         } catch (ParseException e) {
             try {
-                return dateFormat2.parse(dateStr);
+                return dateFormat1.parse(dateStr);
             } catch (ParseException ex) {
                 throw new RuntimeException("Invalid date format: " + dateStr);
             }
