@@ -16,6 +16,10 @@ public class FormaPago {
     private String descrip;
 
     @OneToMany(mappedBy = "paymentType", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "pedido-formaPago")
     private List<Pedido> pedidos;
+
+    @OneToMany(mappedBy = "metodoPago", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "inventory-formaPago")
+    private List<Inventory> metodoPago;
 }

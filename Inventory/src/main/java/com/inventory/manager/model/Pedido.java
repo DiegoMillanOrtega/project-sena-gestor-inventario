@@ -21,12 +21,12 @@ import java.util.List;
         private String address;
     
         @ManyToOne(fetch = FetchType.EAGER)
-        @JsonBackReference
+        @JsonBackReference(value = "client-pedidos")
         @JoinColumn(name = "id_cliente")
-        private Client client;
+        private Tercero client;
     
         @ManyToOne(fetch = FetchType.EAGER)
-        @JsonBackReference
+        @JsonBackReference(value = "pedido-formaPago")
         @JoinColumn(name = "forma_pago_ID")
         private FormaPago paymentType;
 
@@ -35,9 +35,7 @@ import java.util.List;
         @ManyToOne(fetch = FetchType.EAGER)
         @JsonBackReference
         @JoinColumn(name = "id_vendedor")
-        private Client vendedor;
-
-        private String formaPago;
+        private Tercero vendedor;
 
         private Date fecha;
     

@@ -9,7 +9,7 @@ public interface ICategoryService{
     public List<Category> findAll();
     public List<Category> findByCategory(String category);
     public Category findByCategoryId(Long id);
-    public void saveCategory(Category category);
+    public Category saveCategory(Category category);
     public void deleteCategory(Long id);
 
 }

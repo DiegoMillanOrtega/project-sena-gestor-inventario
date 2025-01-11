@@ -2,12 +2,14 @@ package com.inventory.manager.service.FormaPago;
 
 import com.inventory.manager.ExcepcionesPersonalizadas.DataBaseException;
 import com.inventory.manager.model.FormaPago;
+import com.inventory.manager.model.FormaPagoDTO;
 import com.inventory.manager.repository.IFormaPagoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FormaPagoService implements IFormaPagoService{
@@ -15,13 +17,22 @@ public class FormaPagoService implements IFormaPagoService{
     @Autowired
     private IFormaPagoRepository repository;
     @Override
-    public List<FormaPago> getAllFormasDePago() {
+    public List<FormaPagoDTO> getAllFormasDePago() {
         List<FormaPago> formasDePago = repository.findAll();
         //Si no encuentra formas de pagos tenga una excepcion:
         if (formasDePago.isEmpty()) {
             throw new RuntimeException("No se encontró formas de pago");
         }
-        return formasDePago;
+        return formasDePago.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    public FormaPagoDTO convertToDTO(FormaPago formaPago) {
+        return new FormaPagoDTO(
+                formaPago.getFormaPagoID(),
+                formaPago.getNombre(),
+                formaPago.getDescrip()
+        );
     }
 
     @Override
@@ -44,5 +55,13 @@ public class FormaPagoService implements IFormaPagoService{
         }
         return repository.findById(formaPagoID)
                 .orElseThrow(() -> new EntityNotFoundException("Forma de pago no encontrada con el ID: " + formaPagoID));
+    }
+
+    @Override
+    public void deleteFormaPago(Long formaPagoID) {
+        if (!repository.existsById(formaPagoID)){
+            throw new EntityNotFoundException("Forma de pago con id"+ formaPagoID + " no encontrado");
+        }
+        repository.deleteById(formaPagoID);
     }
 }

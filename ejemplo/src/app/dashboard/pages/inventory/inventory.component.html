@@ -213,12 +213,32 @@
     <div class="col-md-3">
       <div class="input-group">
         <span class="input-group-text" id="basic-addon1"><i class="bi bi-funnel"></i></span>
-        <select class="form-select" aria-label="Filtrar por Categoría" (change)="buscarProductosByCategory($event.target?.value)">
-          <option selected>Filtrar por Categoría</option>
-          @for (categoria of categoryList; track $index) {
-          <option value="{{categoria.id}}" >{{categoria.category}}</option>
-          }
-        </select>
+        
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            (click)="dropdownOpen = !dropdownOpen"
+            [attr.aria-expanded]="dropdownOpen ? 'true' : 'false'"
+          >
+            @if (productCategory.valueOf()) {
+            {{ productCategory }}
+            } @else { Filtrar por categoría }
+          </button>
+          <ul class="dropdown-menu" [ngClass]="{ 'show': dropdownOpen }">
+            @for (category of categoryList; track $index) {
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="buscarProductosByCategory(category)"
+                (click)=" dropdownOpen = !dropdownOpen"
+                > {{ category.category }}</a
+              >
+            </li>
+            }
+          </ul>
+        </div>
       </div>
     </div>
     <div class="col-md-3">

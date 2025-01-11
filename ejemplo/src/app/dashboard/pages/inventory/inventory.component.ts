@@ -54,6 +54,7 @@ export class InventoryComponent implements OnInit, AfterViewInit {
   sortDirection: string = 'asc';
   editProductoModalBootstrap!: Modal;
   productoForm: FormGroup;
+  dropdownOpen: boolean = false;
 
   constructor(private form: FormBuilder) {
     this.productoForm = form.group({

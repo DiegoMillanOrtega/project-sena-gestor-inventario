@@ -27,4 +27,5 @@ public interface IInventoryRepository extends JpaRepository<Inventory, Long> {
 
     List<Inventory> findByProductContainingAndStockLessThan(String product, int stock);
 
+
 }

@@ -1,6 +1,7 @@
 package com.inventory.manager.controller.FormaPago;
 
 import com.inventory.manager.model.FormaPago;
+import com.inventory.manager.model.FormaPagoDTO;
 import com.inventory.manager.service.FormaPago.FormaPagoService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class FormaPagoController {
     private FormaPagoService service;
 
     @GetMapping("/getAllFormasDePago")
-    public ResponseEntity<List<FormaPago>> getAllFormasDePago() {
-        List<FormaPago> formasPago = service.getAllFormasDePago();
+    public ResponseEntity<List<FormaPagoDTO>> getAllFormasDePago() {
+        List<FormaPagoDTO> formasPago = service.getAllFormasDePago();
         return ResponseEntity.ok(formasPago);
     }
 
@@ -34,6 +35,18 @@ public class FormaPagoController {
     public ResponseEntity<FormaPago> addFormaPago(@RequestBody FormaPago formaPago) {
         FormaPago nuevaFormaPago = service.addFormaPago(formaPago);
         return new ResponseEntity<>(formaPago, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/deleteFormaPago/{id}")
+    public ResponseEntity<String> deleteFormaPago(@PathVariable Long id) {
+        try {
+            service.deleteFormaPago(id);
+            return new ResponseEntity<>("Producto eliminado con exito", HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al Eliminar la forma de pago", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Manejo global de excepciones (opcional)

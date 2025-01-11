@@ -27,10 +27,32 @@ public class InventoryService implements IInventoryService {
     public InventoryDTO convertToDTO(Inventory inventory) {
         return new InventoryDTO(
                 inventory.getId(),
+                inventory.getCodigo(),
                 inventory.getProduct(),
+                inventory.getMarca(),
+                inventory.getVersion(),
                 inventory.getCategory(),
                 inventory.getPrice(),
-                inventory.getStock()
+                inventory.getStock(),
+                inventory.getCantMinStock(),
+                inventory.getFechaCreacion(),
+                inventory.getPeso(),
+                inventory.getPrecioMayorista(),
+                inventory.getPlazoPago(),
+                inventory.getFechaVencimiento(),
+                inventory.getImagen(),
+                inventory.getQR(),
+                inventory.getBodega(),
+                inventory.getPrecioCosto(),
+                inventory.getMargenGanancia(),
+                inventory.getIva(),
+                inventory.getMetodoPago(),
+                inventory.getProveedor(),
+                inventory.getEstado(),
+                inventory.getUnidadMedida(),
+                inventory.getDescrip(),
+                inventory.getPrecioVenta()
+
         );
     }
 
